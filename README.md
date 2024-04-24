@@ -5,7 +5,7 @@ Ein Projekt im Rahmen des Moduls SSTK.
 ## Anforderungen:
 - Die Möglichkeit mittels eines Lautsprechers einen Alarmton abzuspielen.
 -   Eine ausreichende Lautstärke.
-- Die Möglichkeit die Funktionalität des Weckers über ein Webinterface zu steurn im gegensatz zu Hardware Knöpfen
+- Die Möglichkeit die Funktionalität des Weckers über ein Webinterface zu steuern im Gegensatz zu Hardware Knöpfen
 - Die Möglichkeit eine Verbindung mit dem Internet her zu stellen.
 - Die möglichkeit das Arretieren des Signaltons hinter einer Bedingung zu Setzen
 -   Das lösen einer Matheaufgabe die jeden tag neu ist, und an dieses Tag gebunden ist.
