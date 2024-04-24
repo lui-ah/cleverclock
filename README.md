@@ -12,3 +12,6 @@ Ein Projekt im Rahmen des Moduls SSTK.
 -   Das einscannen eines QR-Codes (physisch getrennt vom Nutzer) direkt auf der Web-App
 -   Das eingeben eines Codes, der nur abrufbar ist, durch den Zugriff auf ein Dokument das physisch vom Nutzer getrennt ist.
 -   Die möglichkeiten diese Anforderungen zu varieren und zu Kombinieren.
+-   Ankhi anbindung mit upload date
+-   WAS IST WENN MAN DIE AUFGABEN NICHT SCHAFFT
+-   5s Strafe wenn man eine Frage falsch hat oder skipt
