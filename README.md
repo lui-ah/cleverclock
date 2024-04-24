@@ -14,4 +14,4 @@ Ein Projekt im Rahmen des Moduls SSTK.
 -   Die möglichkeiten diese Anforderungen zu varieren und zu Kombinieren.
 -   Ankhi anbindung mit upload date
 -   WAS IST WENN MAN DIE AUFGABEN NICHT SCHAFFT
--   5s Strafe wenn man eine Frage falsch hat oder skipt
+-   5s Strafe wenn man eine Frage falsch hat oder skipt mit einem 2min maximum
