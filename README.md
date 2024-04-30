@@ -14,3 +14,20 @@ Ein Projekt im Rahmen des Moduls SSTK.
   - Ankhi anbindung mit upload Datei. Damit auch die Mathe aufgaben implementieren? Dann wäre das einheitlich.
     - WAS IST WENN MAN DIE AUFGABEN NICHT SCHAFFT
   - 5s Strafe wenn man eine Frage falsch hat oder skipt mit einem 2min maximum
+
+## Ideen
+- Das hinzufügen von Sensoren um die Schlafquilität zu überwachen (CO2, Temperatur, ?Mikro?)
+- Ein Display um Informationen zu Sammeln
+- Eine Kamera die irgendetwas aufnimmt und analysiert? Bewegug? Denke da so ein bisschen an den Beitrag der anderen Gruppen die ja etwas größer denken
+
+
+# Konkretisierung
+- Verschiedene Rolle
+  - Design/ Technik
+  - Webinterface
+  - Server
+  - Dokumentation
+  - Codierung
+- Server in Node-Red erstellen oder in Node (falls @lui-ah das machen soll)
+- Webinterface (Apple Shortcuts würde notfalls auch gehen). Das kann @lui-ah machen
+- Design sollte ein Wenig interesant sein. Low-Tech Prototyp kann aber ein kleiner Karton sein
