@@ -29,5 +29,6 @@ Ein Projekt im Rahmen des Moduls SSTK.
   - Dokumentation
   - Codierung
 - Server in Node-Red erstellen oder in Node (falls @lui-ah das machen soll)
+  - Wenn mit Node-Red brauchen wir ein MQTT Broker von der Uni
 - Webinterface (Apple Shortcuts würde notfalls auch gehen). Das kann @lui-ah machen
 - Design sollte ein Wenig interesant sein. Low-Tech Prototyp kann aber ein kleiner Karton sein
