@@ -1,4 +1,4 @@
-# cleverclock
+# CleverClock
 Ein Projekt im Rahmen des Moduls SSTK.
 
 ## Anforderungen:
