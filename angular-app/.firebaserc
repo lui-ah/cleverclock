@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "studipcal": {
+      "hosting": {
+        "angular-app": [
+          "cleverclock"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "studipcal"
+  }
+}
