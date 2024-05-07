@@ -1,7 +1,12 @@
 $border-radius: 12px;
 
 #background-wrapper {
-    position: absolute;
+    position: fixed;
+    // this shouuld fix some issues with some screens.
+    // Future proofing, if the content gets too long
+
+    top: 0;
+    left: 0;
 
     height: 100vh;
     width: 100vw;
@@ -9,7 +14,7 @@ $border-radius: 12px;
     overflow: hidden;
 
     background: rgb(255, 255, 255);
-    background: radial-gradient(circle, rgba(193, 105, 105, 0.225) 0%, rgba(255, 255, 255, 0) 92%);
+    background: radial-gradient(circle, rgba(193, 105, 105, 0.230) 0%, rgba(255, 255, 255, 0) 92%);
     #background {
         position: absolute;
         top: 50%;
@@ -23,7 +28,7 @@ $border-radius: 12px;
         width: 250vw;
     
         background: url("../../assets/GETUP2.svg");
-        background-size: 35% auto; // Adjusts the Text size. To adjust the spacing, adjust the SVG.
+        background-size: 37% auto; // Adjusts the Text size. To adjust the spacing, adjust the SVG.
         background-repeat: repeat;
         
         // background-position: 85.8% 0;
@@ -42,7 +47,25 @@ $border-radius: 12px;
     }
 }
 
+@media (min-width: 650px) { // Slows down the animation on wider screens
+    #background-wrapper #background {
+        background-size: 47% auto;
+    }
+}
 
+@media (min-width: 1100px)  { // The bg begins to break down here
+    #background-wrapper #background {
+        height: 100vh;
+        width: 100vw;
+
+        top: unset;
+        left: unset;
+
+        background-size: 75% auto;
+
+        transform: rotate(0deg);
+    }
+}
 
 #wrapper {
     position: relative; // To have the bg-wrapper in the bg
@@ -51,9 +74,9 @@ $border-radius: 12px;
     flex-direction: column;
     justify-content: start;
 
-    min-height: 100vh;
+    min-height: 100%;
 
-    margin: 10vw;
+    margin: 10%;
     margin-top: 0;
     margin-bottom: 0;
 
@@ -108,13 +131,15 @@ $border-radius: 12px;
 
 
             .description {
-                font-size: 14pt;
-                margin-bottom: 10px;
                 margin-top: 5px;
+                margin-bottom: 10px;
+
+                font-size: 14pt;
                 font-weight: 500;
             }
             .content {
                 margin-top: 10px;
+                
                 font-size: 12pt;
             }
             .actions {
@@ -123,6 +148,9 @@ $border-radius: 12px;
 
                 font-size: 12pt;
                 color: rgb(116, 116, 116);
+                text-decoration: underline;
+
+                cursor: pointer;
             }
         }
     }
@@ -186,12 +214,12 @@ $border-radius: 12px;
 // Animations
 
 @keyframes jump-shaking {
-    0% { transform: translateX(0) }
-    5% { transform: translateY(-10px) }
-    10% { transform: translateY(-10px) rotate(3.5deg) }
-    20% { transform: translateY(-10px) rotate(-3.5deg) }
-    25% { transform: translateY(-9px) rotate(3deg) }
-    33% { transform: translateY(-9px) rotate(-3deg) }
+    0% { transform: translateY(0) }
+    5% { transform: translateY(-11px) }
+    10% { transform: translateY(-11px) rotate(3.5deg) }
+    20% { transform: translateY(-11px) rotate(-3.5deg) }
+    25% { transform: translateY(-11px) rotate(3.25deg) }
+    35% { transform: translateY(-11px) rotate(-3.25deg) }
     45% { transform: translateY(0) rotate(0) }
     100% { transform: translateY(0) rotate(0) }
 }
