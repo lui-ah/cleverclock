@@ -1,0 +1,12 @@
+<div class="settings-wrapper">
+    <div class="top">
+        <div> Wechkmethoden </div>
+    </div>
+    <mat-slide-toggle 
+        *ngFor="let option of options | keyvalue" 
+        [(ngModel)]="option.value.value"
+        (change)="updateSwitches($event)"
+    >
+            {{ option.value.name }} 
+    </mat-slide-toggle>
+</div>

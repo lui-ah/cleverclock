@@ -1,0 +1,52 @@
+ngx-file-drag-drop {
+    width: 100%;
+    height: 48px;
+
+    margin-bottom: 20px;
+
+    border-radius: 6px;
+}
+
+mat-expansion-panel mat-panel-description {
+    display: flex;
+    justify-content: end;
+}
+
+.item {
+    &.disabled {
+        .text {
+            cursor: unset;
+            opacity: 0.5;        
+        }
+    }
+
+    display: flex;
+    justify-content: space-between;
+
+    .options {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        width: 100px;
+    }
+}
+mat-nav-list {
+    h2, h3 {
+        display: flex;
+        align-items: center;
+
+        mat-icon {
+            margin-left: 8px;
+            cursor: pointer;
+        }
+    }
+}
+mat-dialog-content {
+    display: fley;
+    justify-content: center;
+
+    button, mat-form-field {
+        width: 100%;
+    }
+}

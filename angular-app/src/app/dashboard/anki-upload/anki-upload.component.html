@@ -1,0 +1,31 @@
+<div class="settings-wrapper">
+    <div class="top">
+        <div> Aufgaben verwalten </div>
+    </div>
+    <ngx-file-drag-drop [emptyPlaceholder]="(hasPointingDevice ? 'Drag & Drop oder hier klicken.' : 'Hier Tippen für Upload.')"></ngx-file-drag-drop>
+    <mat-accordion >
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Aufgaben
+              </mat-panel-title>
+              <mat-panel-description>
+                Aktiviert
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+        
+           
+            <mat-list>
+                <mat-list-item *ngFor="let item of items">
+                    <div class="item" [ngClass]="{'disabled': !item.disabled}">
+                        <div class="text" matTooltip="{{ item.front }}" (click)="openBottomSheet(item)">
+                            {{item.front| trim : 15 }}
+                        </div>
+                        <mat-slide-toggle [(ngModel)]="item.disabled"></mat-slide-toggle>
+                    </div>
+                </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+    </mat-accordion>
+    
+</div>

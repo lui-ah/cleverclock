@@ -1,4 +1,4 @@
-$border-radius: 12px;
+@use "../../variables" as v;
 
 #background-wrapper {
     position: fixed;
@@ -89,9 +89,9 @@ $border-radius: 12px;
 
         background-color: rgb(255, 255, 255);
 
-        border-radius: $border-radius;
+        border-radius: v.$border-radius;
 
-        box-shadow: 0 5px 10px rgba(154,160,185,.05), 0 15px 40px rgba(166,173,201,.2);
+        box-shadow: v.$box-shadow;
 
         font-size: 38pt;
         font-weight: 600;
@@ -100,7 +100,7 @@ $border-radius: 12px;
 
         animation: jump-shaking 1s infinite;
     } 
-
+    
     #task-wrapper {
         display: flex;
         justify-content: center;
@@ -112,9 +112,9 @@ $border-radius: 12px;
 
         background-color: #ffffff;
 
-        border-radius: $border-radius;
+        border-radius: v.$border-radius;
         
-        box-shadow: 0 5px 10px rgba(154,160,185,.05), 0 15px 40px rgba(166,173,201,.2);
+        box-shadow: v.$box-shadow;
 
         #task-display {
             display: flex;
@@ -162,9 +162,9 @@ $border-radius: 12px;
 
         background-color: #ffffff;
 
-        border-radius: $border-radius;
+        border-radius: v.$border-radius;
 
-        box-shadow: 0 5px 10px rgba(154,160,185,.05), 0 15px 40px rgba(166,173,201,.2);
+        box-shadow: v.$box-shadow;
 
         mat-form-field {
             display: flex;

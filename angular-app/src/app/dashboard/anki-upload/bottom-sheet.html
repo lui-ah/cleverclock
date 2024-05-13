@@ -1,0 +1,15 @@
+<mat-nav-list>
+    <h2>Vorderseite <mat-icon (click)="openDialog(card, 'front')" >edit</mat-icon></h2>
+    <p>{{card.front}}</p>
+    
+    <h2>Hinterseite <mat-icon (click)="openDialog(card, 'back')" >edit</mat-icon></h2>
+    <p>{{card.back}}</p>
+    
+    <mat-divider></mat-divider>
+    <h3>Anmerkung</h3>
+    <!-- https://www.npmjs.com/package/string-similarity-js -->
+    <p>Der Text wird mittels des Sørensen–Dice coefficient Algoritmus verglichen.</p>
+    <p>Bitte gestalte die Antworten kurz und prägnant.</p>
+    <mat-divider></mat-divider>
+    <h3 class="delete">Löschen <mat-icon>delete</mat-icon></h3>
+</mat-nav-list>

@@ -1,0 +1,22 @@
+@use "../../variables.scss" as v;
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+
+
+    margin: 20px;
+    margin-top: 40px;
+
+
+    .comp {
+        margin-bottom: 20px;
+        padding: 20px;
+    
+        border-radius: v.$border-radius;
+        box-shadow: v.$box-shadow;
+
+        background: #ffffff;
+    }
+}
