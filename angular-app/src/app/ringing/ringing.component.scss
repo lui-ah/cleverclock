@@ -74,7 +74,6 @@ $border-radius: 12px;
     flex-direction: column;
     justify-content: start;
 
-    min-height: 100%;
 
     margin: 10%;
     margin-top: 0;
@@ -101,13 +100,13 @@ $border-radius: 12px;
 
         animation: jump-shaking 1s infinite;
     } 
-    
+
     #task-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
 
-        height: 280px;
+        height: 250px;
 
         padding: 20px;
 

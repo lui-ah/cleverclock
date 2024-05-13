@@ -1,9 +1,19 @@
 #phone-wrapper {
     display: flex;
+    flex: 1;
+    justify-content: center;
 
     min-height: 800px;
+    width: 100%;
     max-width: 500px;
+
+    box-sizing: border-box;
 }
+
+#content-wrapper {
+    width: 100%; 
+}
+
 #wrapper {
     display: flex;
     justify-content: center;
