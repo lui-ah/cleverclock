@@ -8,14 +8,14 @@
     </div>
     
     <div id="task-wrapper">
-        <div id="task-display">
+        <div id="task-display" *ngIf="card | async as task">
             <div class="task">
-                <div class="description">Aufgabe {{card.id}} </div>
+                <div class="description">Aufgabe {{task.id}} </div>
                 <mat-divider></mat-divider>
-                <div class="content">{{card.front}}</div>    
+                <div class="content">{{task.front}}</div>    
             </div>
             <div class="actions">
-                <div class="skip">skip</div>
+                <div class="skip" (click)="skipTask(task.id)">skip</div>
             </div>
         </div>    
     </div>

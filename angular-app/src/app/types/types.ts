@@ -1,6 +1,6 @@
-import { Timestamp } from "@angular/fire/firestore";
+import { DocumentData, Timestamp } from "@angular/fire/firestore";
 
-export interface Card {
+export interface Card extends DocumentData {
     id: number;
     front: string;
     back: string;
@@ -11,20 +11,25 @@ export interface SwitchOption<T> {
     anki: T,
     nfc: T,
     quickOff: T,
-  }
-  
+    // tasksNumber? : number, // maybe add this later.s
+}
+
+export type SwitchOptionKeys = keyof SwitchOption<any>; 
+
+
 export interface SwitchOptionPair {
     name: string;
     value: boolean;
 }
 
 export interface ClockState {
-    isOn: boolean;
+    // isOn: boolean; // maybe add this later with a heartbeat.
     isRinging: boolean;
     disabled: boolean;
     nextTimer: Timestamp
 }
 
+// These should reduce the number of typos in the code.
 export enum dbColPaths {
     anki = 'anki',
     clock = 'clock',

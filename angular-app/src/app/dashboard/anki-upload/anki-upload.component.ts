@@ -53,7 +53,6 @@ export class AnkiUploadComponent {
   
   constructor(private _bottomSheet: MatBottomSheet) {}
 
-
   openBottomSheet(card: Card): void {
     this._bottomSheet.open(BottomSheet, {
       data: card,

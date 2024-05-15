@@ -1,9 +1,13 @@
-import { DatePipe } from '@angular/common';
+import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { NgxMaterialTimepickerComponent, NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, concat, map, take } from 'rxjs';
+import { DatabaseService } from '../../database.service';
+import { ClockState } from '../../types/types';
 
 @Component({
   selector: 'app-date-picker',
@@ -14,12 +18,14 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     MatButtonModule,
     FormsModule,
+    AsyncPipe,
+    CommonModule,
   ],
   templateUrl: './date-picker.component.html',
   styleUrl: './date-picker.component.scss'
 })
 export class DatePickerComponent {
-  currentTime: number;
+  currentTime: Observable<number>;
   @ViewChild('picker') picker!: NgxMaterialTimepickerComponent;
   inputVal: string = '';
   
@@ -29,9 +35,13 @@ export class DatePickerComponent {
     return currentDate.getDay() == targetDate.getDay();
   }
 
-  constructor() {
-    this.currentTime = Date.now();
+  constructor(private db : DatabaseService, private route: ActivatedRoute) { 
+    this.currentTime = concat( // get the data from the resolver then let the db take over.
+      this.route.data.pipe(map(data => (data['state'] as ClockState).nextTimer), take(1)),
+      this.db.nextTimer,
+    ).pipe(map(ts => ts.toDate().getTime()));
   }
+
   setTime() {
     const value = this.picker.time;
     // format: "8:25 AM"
@@ -51,7 +61,7 @@ export class DatePickerComponent {
       targetDate.setDate(targetDate.getDate() + 1);
     }
 
-    this.currentTime = targetDate.getTime();
+    this.db.setNextTimer(targetDate);
   }
 
 }

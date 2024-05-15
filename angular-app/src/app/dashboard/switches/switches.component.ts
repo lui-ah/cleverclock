@@ -1,8 +1,11 @@
-import { KeyValuePipe, NgFor } from '@angular/common';
+import { AsyncPipe, KeyValuePipe, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { SwitchOption, SwitchOptionPair } from '../../types/types';
+import { SwitchOption, SwitchOptionKeys, SwitchOptionPair } from '../../types/types';
+import { DatabaseService } from '../../database.service';
+import { ActivatedRoute } from '@angular/router';
+import { Observable, concat, firstValueFrom, map, mergeMap, take } from 'rxjs';
 
 @Component({
   selector: 'app-switches',
@@ -12,24 +15,31 @@ import { SwitchOption, SwitchOptionPair } from '../../types/types';
     FormsModule,
     NgFor,
     KeyValuePipe,
+    AsyncPipe,
   ],
   templateUrl: './switches.component.html',
   styleUrl: './switches.component.scss'
 })
 export class SwitchesComponent {
-  // These all need to be resolved before this route is activated. 
-  // Default is fine right now.
-  options: SwitchOption<SwitchOptionPair> = {
-    anki: { name: "Anki", value: true },
-    nfc: { name: "NFC", value: true },
-    quickOff: { name: "Quick Off", value: false },
-  };
+  options: Observable<SwitchOption<SwitchOptionPair>>;
 
-  updateSwitches(_event: any) {
-    const options: SwitchOption<boolean> = {
-      anki: this.options.anki.value,
-      nfc: this.options.nfc.value,
-      quickOff: this.options.quickOff.value,
-    };
+  constructor(private db : DatabaseService, private route: ActivatedRoute) { 
+    this.options = concat( // get the data from the resolver then let the db take over.
+      this.route.data.pipe(map(data => data['wakeOptions']), take(1)),
+      this.db.wakeOptions,
+    ).pipe(
+      map(data => { // convert the data to a format that the template can use
+        const { anki, nfc, quickOff } = data;
+        return { // TODO: refractor this to a helper function
+          anki: { name: "Anki", value: anki },
+          nfc: { name: "NFC", value: nfc },
+          quickOff: { name: "Quick Off", value: quickOff },
+        };
+      })
+    );
+  }
+
+  updateSwitch(optionName: SwitchOptionKeys, value: boolean)  { 
+    this.db.setWakeOption(optionName, value);
   }
 }

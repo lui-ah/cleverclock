@@ -14,12 +14,14 @@ export class AppComponent {
   isRingingSubscription: Subscription;
   
   constructor(dataBaseService: DatabaseService, router: Router) {
-    this.isRingingSubscription = dataBaseService.isRinging.subscribe(e => {
-      router.navigate([e ? 'ringing' : 'settings']);
+    this.isRingingSubscription = dataBaseService.isRinging.subscribe(isRinging => {
+      router.navigate([isRinging ? 'ringing' : 'settings']); // redirect to the ringing page if the alarm is ringing
+      // This simplifies navigation. No need for a nav-bar.
     });
   }
   
   ngOnDestroy() {
-    this.isRingingSubscription.unsubscribe();
+    this.isRingingSubscription.unsubscribe(); // prevent memory leaks
+    // Usually we don't explicitly subscribe to obersables, but this time we have to.
   }
 }

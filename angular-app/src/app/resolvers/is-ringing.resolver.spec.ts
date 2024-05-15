@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { ResolveFn } from '@angular/router';
+import { ResolveFn, UrlTree } from '@angular/router';
 
 import { isRingingResolver } from './is-ringing.resolver';
 
 describe('isRingingResolver', () => {
-  const executeResolver: ResolveFn<boolean> = (...resolverParameters) => 
+  const executeResolver: ResolveFn<boolean | UrlTree> = (...resolverParameters) => 
       TestBed.runInInjectionContext(() => isRingingResolver(...resolverParameters));
 
   beforeEach(() => {

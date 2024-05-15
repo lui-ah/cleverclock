@@ -1,6 +1,6 @@
 <div class="settings-wrapper">
-    <div class="top">
-        <div>Nächster Timer: {{ isToday(currentTime) ? 'Heute' : 'Morgen' }} um <b> {{ currentTime | date: 'h:mm' }} </b></div>
+    <div class="top" *ngIf="currentTime | async as time">
+        <div>Nächster Timer: {{ isToday(time) ? 'Heute' : 'Morgen' }} um <b> {{ time | date: 'H:mm' }} </b></div>
     </div>
     <mat-form-field>
         <mat-label>Wählen</mat-label>

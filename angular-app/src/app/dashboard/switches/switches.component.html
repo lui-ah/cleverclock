@@ -3,9 +3,9 @@
         <div> Wechkmethoden </div>
     </div>
     <mat-slide-toggle 
-        *ngFor="let option of options | keyvalue" 
+        *ngFor="let option of options | async | keyvalue" 
         [(ngModel)]="option.value.value"
-        (change)="updateSwitches($event)"
+        (change)="updateSwitch(option.key, option.value.value)"
     >
             {{ option.value.name }} 
     </mat-slide-toggle>

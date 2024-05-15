@@ -12,9 +12,4 @@ import { AnkiUploadComponent } from "./anki-upload/anki-upload.component";
     imports: [DatePickerComponent, SwitchesComponent, TemperatureComponent, AnkiUploadComponent, ]
 })
 export class DashboardComponent {
-    time: number;
-
-    constructor() {
-        this.time = Date.now();
-    }
 }
