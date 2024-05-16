@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, docData, doc, addDoc, Timestamp, updateDoc, collectionChanges, collectionData, DocumentData } from '@angular/fire/firestore';
+import { Firestore, collection, docData, doc, addDoc, Timestamp, updateDoc, collectionChanges, collectionData, DocumentData, deleteDoc } from '@angular/fire/firestore';
 import { Observable, map } from 'rxjs';
 import { Card, ClockState, SwitchOption, SwitchOptionKeys, dbColPaths, dbDocPaths } from './types/types';
 
@@ -28,10 +28,13 @@ export class DatabaseService {
 
     this.wakeOptions = docData(doc(this.firestore, dbDocPaths.wakeOptions)) as Observable<SwitchOption<boolean>>;
 
-    this.cards = collectionData(collection(this.firestore, dbColPaths.anki)) as Observable<Card[]>;    
+    this.cards = collectionData(collection(this.firestore, dbColPaths.anki), {
+      idField: 'generatedId',
+    }) as Observable<Card[]>;    
   }
 
   uploadCard(card: Card) {
+    delete card.generatedId; // We don't want to upload the generatedId.
     const cardCollection = collection(this.firestore, dbColPaths.anki);
     return addDoc(cardCollection, card);
   }
@@ -51,5 +54,32 @@ export class DatabaseService {
       doc(this.firestore, dbDocPaths.wakeOptions),
       { [option]: value }
     );
+  }
+
+  getCard(generatedId: string) {
+    const cardRef = doc(this.firestore, dbColPaths.anki + "/" + generatedId);
+    return docData(cardRef, {
+      idField: 'generatedId',
+    }) as Observable<Card>;
+  }
+
+  updateCard(card: Card) {
+    if (!card.generatedId) {
+      throw new Error('Card must have a generatedId attached to it.'); 
+    } else if (card.front === '' || card.back === '') {
+      throw new Error('Card must have a front and back value.'); 
+    };
+    const cardRef = doc(this.firestore, dbColPaths.anki + "/" + card.generatedId)
+    delete card.generatedId; // We don't want to upload the generatedId.
+    return updateDoc(cardRef, card);
+  }
+
+  deleteCard(card: Card) {
+    console.log(card);
+    if (!card.generatedId) {
+      throw new Error('Card must have a generatedId attached to it.'); 
+    }
+    const cardRef = doc(this.firestore, dbColPaths.anki + "/" + card.generatedId);
+    return deleteDoc(cardRef);
   }
 }

@@ -1,4 +1,4 @@
-<mat-nav-list>
+<mat-nav-list *ngIf="card | async as card">
     <h2>Vorderseite <mat-icon (click)="openDialog(card, 'front')" >edit</mat-icon></h2>
     <p>{{card.front}}</p>
     
@@ -11,5 +11,5 @@
     <p>Der Text wird mittels des Sørensen–Dice coefficient Algoritmus verglichen.</p>
     <p>Bitte gestalte die Antworten kurz und prägnant.</p>
     <mat-divider></mat-divider>
-    <h3 class="delete">Löschen <mat-icon>delete</mat-icon></h3>
+    <h3 class="delete" (click)="delete()">Löschen <mat-icon>delete</mat-icon></h3>
 </mat-nav-list>

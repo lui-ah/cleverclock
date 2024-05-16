@@ -5,6 +5,7 @@ export interface Card extends DocumentData {
     front: string;
     back: string;
     disabled: boolean;
+    generatedId?: string; // This is being added by the service. We don't want to upload it.
 }
 
 export interface SwitchOption<T> {
