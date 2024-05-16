@@ -17,11 +17,6 @@ export interface SwitchOption<T> {
 export type SwitchOptionKeys = keyof SwitchOption<any>; 
 
 
-export interface SwitchOptionPair {
-    name: string;
-    value: boolean;
-}
-
 export interface ClockState {
     // isOn: boolean; // maybe add this later with a heartbeat.
     isRinging: boolean;
