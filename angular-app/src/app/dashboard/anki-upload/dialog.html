@@ -3,5 +3,5 @@
   <mat-form-field>
     <textarea matInput [(ngModel)]="text"></textarea>
   </mat-form-field>
-  <button mat-flat-button color="primary" (click)="saveSide()" [disabled]="!text">Sichern</button>
+  <button mat-flat-button color="primary" (click)="saveSide()" [disabled]="!text" mat-dialog-close>Sichern</button>
 </mat-dialog-content>

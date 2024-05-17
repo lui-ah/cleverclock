@@ -7,7 +7,7 @@
         {{time | date: 'h:mm:ss' }}
     </div>
     
-    @if (display.anki) {
+    @if (display | async; as display) { @if (display.anki) {
         <div id="task-wrapper">
             <div id="task-display" *ngIf="card | async as card">
                 <div class="task">
@@ -31,13 +31,13 @@
                   </button>
                 }
               </mat-form-field>
-              <button mat-stroked-button type="submit" (click)="displaySuccessTask()">Prüfen</button>
+              <button mat-stroked-button type="submit" (click)="determineSuccess()">Prüfen</button>
         </div>
-    }
+    }}
 
     
 
-    @if (display.nfc) {
+    @if (display | async; as display) { @if (display.nfc) {
         @if (display.anki) {
             <div class="text-divider">
                 <div class="line"><mat-divider></mat-divider></div>
@@ -47,12 +47,12 @@
         }
 
         <div class="big-button">
-            <button mat-raised-button> scanner starten <mat-icon>nfc</mat-icon> </button>
+            <button mat-raised-button (click)="scanNFC()"> scanner starten <mat-icon>nfc</mat-icon> </button>
         </div>
-    }
+    }}
 
     <!-- this is the fallback, so the user doens't lock themself out -->
-    @if(display.quickOff || (!display.anki && !display.nfc)) {
+    @if (display | async; as display) { @if(display.quickOff || (!display.anki && !display.nfc)) {
         @if (display.anki || display.nfc) {
             <div class="text-divider">
                 <div class="line"><mat-divider></mat-divider></div>
@@ -62,7 +62,7 @@
         }
     
         <div class="big-button">
-            <button mat-raised-button> Sofort Aus <mat-icon>alarm_off</mat-icon> </button>
+            <button mat-raised-button (click)="stopRinging()"> Sofort Aus <mat-icon>alarm_off</mat-icon> </button>
         </div>
-    }
+    }}
 </div>

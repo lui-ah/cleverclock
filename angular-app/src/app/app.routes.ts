@@ -31,6 +31,7 @@ export const routes: Routes = [
         canDeactivate: [isNotRingingResolver],
         resolve: {
             cards: cardsResolver,
+            wakeOptions: wakeOptionsResolver, 
         }
     },
 ];

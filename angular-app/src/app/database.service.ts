@@ -82,4 +82,8 @@ export class DatabaseService {
     const cardRef = doc(this.firestore, dbColPaths.anki + "/" + card.generatedId);
     return deleteDoc(cardRef);
   }
+
+  setRinging(isRinging: boolean) {
+    return updateDoc(doc(this.firestore, dbDocPaths.clockState), { isRinging });
+  }
 }

@@ -23,6 +23,7 @@ import {
   MAT_DIALOG_DATA,
   MatDialogTitle,
   MatDialogContent,
+  MatDialogModule,
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -120,7 +121,14 @@ export class BottomSheet {
   templateUrl: 'dialog.html',
   styleUrl: './anki-upload.component.scss',
   standalone: true,
-  imports: [MatDialogTitle, MatDialogContent, MatInputModule, FormsModule, MatButtonModule],
+  imports: [
+    MatDialogTitle, 
+    MatDialogModule,
+    MatDialogContent,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+  ],
 })
 export class DialogWData {
   text: string;

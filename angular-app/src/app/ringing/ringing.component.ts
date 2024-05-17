@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from "@angular/material/divider";
-import { Observable, Subscription, map, take, timer } from 'rxjs';
+import { Observable, Subscription, firstValueFrom, map, take, timer } from 'rxjs';
 import { DatabaseService } from '../database.service';
 import { ActivatedRoute } from '@angular/router';
 import { Card, SwitchOption } from '../types/types';
@@ -38,17 +38,15 @@ export class RingingComponent {
   card: Observable<Card>;
   cards: Observable<Card[]>;
   
-  display: SwitchOption<boolean> = { // TODO: get this from the database.
-    anki: true,
-    nfc: true,
-    quickOff: false,
-  };
+  display: Observable<SwitchOption<boolean>>;
 
   constructor(public dialog: MatDialog, private route: ActivatedRoute, private db: DatabaseService) {
     this.time = Date.now();
 
     const time = timer(0, 500).pipe(map(() => Date.now()));
     this.timeSubscribtion = time.subscribe((time) => this.time = time); 
+
+    this.display = this.route.data.pipe(map(data => data['wakeOptions'] as SwitchOption<boolean>), take(1));
 
     this.cards = this.route.data.pipe(map(data => data['cards'] as Card[]), take(1));
     // Getting the data once is enough. We don't want to indtroduce too much overhead.
@@ -75,18 +73,53 @@ export class RingingComponent {
     this.timeSubscribtion.unsubscribe();
   }
 
-  displaySuccessTask() {
+  determineSuccess() {
+    // TODO: Implement the logic for determining success. Using this.value and this.card.
+    Math.random() > 0.5 ? this.displaySuccessTask() : this.displayFailureTask();
+  }
+
+  async displaySuccessTask() {
+
+    const card = await firstValueFrom(this.card);
+
     // Consider fading out the background.
-    const dialogRef = this.dialog.open(DialogContentExampleDialog,
+    const dialogRef = this.dialog.open(SuccessDialog,
       {
-        data: { card: this.card },
+        data: { card: card },
+        width: '400px', // Same width as the main content.
+      }
+    );
+
+    dialogRef.afterClosed().subscribe(result => {
+      // DEBUG: realistically, there shouldn't be a check here.
+      if (result) this.stopRinging();
+    });
+  }
+
+  async displayFailureTask() {
+    const card = await firstValueFrom(this.card);
+
+    // Consider fading out the background.
+    const dialogRef = this.dialog.open(FailureDialog,
+      {
+        data: { card: card },
         width: '400px', // Same width as the main content.
       }
     );
 
     dialogRef.afterClosed().subscribe(_result => {
-      // Stop the ringing.
+      this.skipTask(card.id);
+      // TODO: Implement the logic for the failure dialog.
     });
+  }
+
+  stopRinging() {
+    this.db.setRinging(false);
+  }
+
+  scanNFC() {
+    // TODO: Implement NFC scanning.
+    this.stopRinging();
   }
 }
 
@@ -100,7 +133,7 @@ export class RingingComponent {
     MatButtonModule,
   ],
 })
-export class DialogContentExampleDialog {
+export class SuccessDialog {
   interval: any;
   repeatEffect: boolean = false;
   card: Card;
@@ -141,8 +174,25 @@ export class DialogContentExampleDialog {
     }, 2500) : null;
   }
 
-
   ngOnDestroy() {
     clearInterval(this.interval);
+  }
+}
+
+@Component({
+  selector: 'failure-dialog',
+  templateUrl: 'failure-dialog.html',
+  styleUrl: './ringing.component.scss',
+  standalone: true,
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+  ],
+})
+export class FailureDialog {
+  card: Card;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {card: Card}) {
+    this.card = data.card;
   }
 }
