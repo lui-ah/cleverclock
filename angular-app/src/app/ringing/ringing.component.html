@@ -7,40 +7,62 @@
         {{time | date: 'h:mm:ss' }}
     </div>
     
-    <div id="task-wrapper">
-        <div id="task-display" *ngIf="card | async as task">
-            <div class="task">
-                <div class="description">Aufgabe {{task.id}} </div>
-                <mat-divider></mat-divider>
-                <div class="content">{{task.front}}</div>    
-            </div>
-            <div class="actions">
-                <div class="skip" (click)="skipTask(task.id)">skip</div>
-            </div>
-        </div>    
-    </div>
-
-    <div id="task-field">
-        <mat-form-field subscriptSizing="dynamic">
-            <mat-label> Deine Lösung </mat-label>
-            <input matInput type="text" [(ngModel)]="value">
-            @if (value) {
-              <button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
-                <mat-icon>close</mat-icon>
-              </button>
-            }
-          </mat-form-field>
-    </div>
-
-    <div id="text-divider">
-        <div class="line"><mat-divider></mat-divider></div>
-        <div class="text mat-typography">oder</div>
-        <div class="line"><mat-divider></mat-divider></div>
-    </div>
-
-    <div id="open-scanner">
-        <button mat-raised-button> scanner starten <mat-icon>nfc</mat-icon> </button>
-    </div>
+    @if (display.anki) {
+        <div id="task-wrapper">
+            <div id="task-display" *ngIf="card | async as card">
+                <div class="task">
+                    <div class="description">Aufgabe {{card.id}} </div>
+                    <mat-divider></mat-divider>
+                    <div class="content">{{card.front}}</div>    
+                </div>
+                <div class="actions">
+                    <div class="skip" (click)="skipTask(card.id)">skip</div>
+                </div>
+            </div>    
+        </div>
     
+        <div id="task-field">
+            <mat-form-field subscriptSizing="dynamic">
+                <mat-label> Deine Lösung </mat-label>
+                <textarea cdkTextareaAutosize matInput type="text" [(ngModel)]="value"></textarea>          
+                @if (value) {
+                  <button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
+              </mat-form-field>
+              <button mat-stroked-button type="submit" (click)="displaySuccessTask()">Prüfen</button>
+        </div>
+    }
+
     
+
+    @if (display.nfc) {
+        @if (display.anki) {
+            <div class="text-divider">
+                <div class="line"><mat-divider></mat-divider></div>
+                <div class="text mat-typography">oder</div>
+                <div class="line"><mat-divider></mat-divider></div>
+            </div>
+        }
+
+        <div class="big-button">
+            <button mat-raised-button> scanner starten <mat-icon>nfc</mat-icon> </button>
+        </div>
+    }
+
+    <!-- this is the fallback, so the user doens't lock themself out -->
+    @if(display.quickOff || (!display.anki && !display.nfc)) {
+        @if (display.anki || display.nfc) {
+            <div class="text-divider">
+                <div class="line"><mat-divider></mat-divider></div>
+                <div class="text mat-typography">oder</div>
+                <div class="line"><mat-divider></mat-divider></div>
+            </div>
+        }
+    
+        <div class="big-button">
+            <button mat-raised-button> Sofort Aus <mat-icon>alarm_off</mat-icon> </button>
+        </div>
+    }
 </div>
