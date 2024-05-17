@@ -17,7 +17,6 @@ import {
   MatBottomSheetRef,
 } from '@angular/material/bottom-sheet';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import { items } from './mock-data'
 import { Card } from '../../types/types';
 import {
   MatDialog,

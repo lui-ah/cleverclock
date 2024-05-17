@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from "@angular/material/divider";
 import { Observable, Subscription, map, take, timer } from 'rxjs';
-import { items } from '../dashboard/anki-upload/mock-data'
 import { Card } from '../types/types';
 import { DatabaseService } from '../database.service';
 import { ActivatedRoute } from '@angular/router';
