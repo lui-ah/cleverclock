@@ -60,6 +60,13 @@ export class AnkiUploadComponent {
     this.items = db.cards;
   }
 
+  uploadFile(files: File[]) {
+    const file = files[0];
+
+    this.db.makeRequest(file);
+
+  }
+
   openBottomSheet(card: Card): void {
     this._bottomSheet.open(BottomSheet, {
       data: card,

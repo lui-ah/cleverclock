@@ -5,8 +5,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getFunctions, provideFunctions } from '@angular/fire/functions';
-import { firebaseConfig } from "../environment/environment.prod";
+import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
+import { firebaseConfig, production } from "../environment/environment.prod";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +18,12 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => 
       initializeApp(firebaseConfig)),
     provideFirestore(() => getFirestore()),
-    provideFunctions(() => getFunctions())
+    provideFunctions(() => {
+      const functions = getFunctions()
+      if (!production) {
+        connectFunctionsEmulator(functions, 'localhost', 5001);
+      }
+      return functions
+    })
   ]
 };

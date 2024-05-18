@@ -7,13 +7,26 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+import { onCall } from "firebase-functions/v2/https";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+// function base64ToArrayBuffer(base64: string) {
+//     const binaryString = atob(base64);
+//     const bytes = new Uint8Array(binaryString.length);
+//     for (let i = 0; i < binaryString.length; i++) {
+//         bytes[i] = binaryString.charCodeAt(i);
+//     }
+//     return bytes.buffer;
+// }
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// function base64ToBytes(base64: string) {
+//     const buffer = base64ToArrayBuffer(base64);
+    
+//     const file = new File([buffer], "anki.apkg", {type: "application/zip"})
+//     return file;
+// }
+
+export const helloWorld = onCall<{fileBase64:string}>(async (data) => {
+    return {text: "Hello from Firebase!"};
+});
+
+

@@ -2,12 +2,15 @@ import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, docData, doc, addDoc, Timestamp, updateDoc, collectionChanges, collectionData, DocumentData, deleteDoc } from '@angular/fire/firestore';
 import { Observable, map } from 'rxjs';
 import { Card, ClockState, SwitchOption, SwitchOptionKeys, dbColPaths, dbDocPaths } from './types/types';
+import { Functions, HttpsCallable, httpsCallable } from '@angular/fire/functions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DatabaseService {
   private firestore: Firestore = inject(Firestore); 
+  private functions = inject(Functions);
+
   isRinging: Observable<boolean>;
   disabled: Observable<boolean>;
   nextTimer: Observable<Timestamp>;
@@ -15,6 +18,8 @@ export class DatabaseService {
   cards: Observable<Card[]>;
 
   wakeOptions: Observable<SwitchOption<boolean>>;
+
+  host: string = 'http://127.0.0.1:5001/studipcal/us-central1';
 
   constructor() { 
     const ringingDocument = doc(this.firestore, dbDocPaths.clockState);
@@ -85,5 +90,40 @@ export class DatabaseService {
 
   setRinging(isRinging: boolean) {
     return updateDoc(doc(this.firestore, dbDocPaths.clockState), { isRinging });
+  }
+
+  private getBase64(file: File) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve((reader.result as string)
+        .replace('data:', '')
+        .replace(/^.+,/, '')
+      );
+      reader.onerror = reject;
+    });
+ }
+ 
+
+  async makeRequest(file: File) {
+    if(!file) {
+      throw new Error('No file selected.');
+    } else if (file.name.endsWith('csv')) {
+      throw new Error('Not yet implemented.');
+    } else if(!file.name.endsWith('.apkg')) {
+      throw new Error('File must be an Anki deck.');
+    }
+    
+    console.log(file);
+    
+    const addMessage = httpsCallable(this.functions, 'helloWorld');
+
+    addMessage({
+      fileBase64: await this.getBase64(file),
+    }).then(result => {
+        console.log(result);
+      }
+    )
+    
   }
 }
