@@ -1,11 +1,15 @@
 import { DocumentData, Timestamp } from "@angular/fire/firestore";
 
-export interface Card extends DocumentData {
-    id: number;
+export enum FunctionsEndpoints {
+    getCards = 'getCards',
+}
+export interface CardNoId {
     front: string;
     back: string;
     disabled: boolean;
-    generatedId?: string; // This is being added by the service. We don't want to upload it.
+}
+export interface Card extends DocumentData, CardNoId {
+    id: number;
 }
 
 export interface SwitchOption<T> {
