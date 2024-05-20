@@ -8,10 +8,11 @@ import { MatDividerModule } from "@angular/material/divider";
 import { Observable, Subscription, firstValueFrom, map, take, timer } from 'rxjs';
 import { DatabaseService } from '../database.service';
 import { ActivatedRoute } from '@angular/router';
-import { Card, SwitchOption } from '../types/types';
+import { Card, Feedback, SwitchOption } from '../types/types';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import confetti from 'canvas-confetti'; // Import the confetti library, most web-dev thing I've ever done.
+import { SmartRatingService } from '../smart-rating.service';
 
 @Component({
     selector: 'app-ringing',
@@ -35,12 +36,12 @@ export class RingingComponent {
   timeSubscribtion: Subscription;
 
   value: string = '';
-  card: Observable<Card>;
+  card: Card | undefined;
   cards: Observable<Card[]>;
   
   display: Observable<SwitchOption<boolean>>;
 
-  constructor(public dialog: MatDialog, private route: ActivatedRoute, private db: DatabaseService) {
+  constructor(public dialog: MatDialog, private route: ActivatedRoute, private db: DatabaseService, private ai: SmartRatingService) {
     this.time = Date.now();
 
     const time = timer(0, 500).pipe(map(() => Date.now()));
@@ -51,64 +52,65 @@ export class RingingComponent {
     this.cards = this.route.data.pipe(map(data => data['cards'] as Card[]), take(1));
     // Getting the data once is enough. We don't want to indtroduce too much overhead.
     // There won't be any changes to the cards while the user is on this page anyway.
-    this.card = this.cards.pipe(map(cards => cards[Math.floor(Math.random() * cards.length)]));
+    this.cards.subscribe(cards => { // We only take one value, so no need to unsubscribe.
+      this.card = cards[Math.floor(Math.random() * cards.length)];
+    });
     // As long as we don't plan to implement that feature, where we require multiple correct answers, 
     // we can just pick a random card from the list.
     // if we decide to implement that feature, additonal logic (and UI) will be required.
   }
   
-  skipTask(id?: number) {
+  async skipTask(id?: number) {
     // We will pick a random card from the list, but exclude the card that was skipped.
     // id might be undefined, if the user skips the task without selecting an answer.
     // but that's fine, because undefined is always not equal to card.id anyway.
-    this.card = this.cards.pipe(
-      map(cards => {
-        const filtered = cards.filter(card => card.id !== id);
-        return filtered[Math.floor(Math.random() * filtered.length)]
-      })
-    );
+    this.cards.subscribe(cards => {
+      const filteredCards = cards.filter(card => card.id !== id);
+      this.card = filteredCards[Math.floor(Math.random() * filteredCards.length)];
+    });
+
+    console.log(this.card);
   }
 
   ngOnDestroy() {
     this.timeSubscribtion.unsubscribe();
   }
 
-  determineSuccess() {
-    // TODO: Implement the logic for determining success. Using this.value and this.card.
-    Math.random() > 0.5 ? this.displaySuccessTask() : this.displayFailureTask();
+  async determineSuccess() {
+    if(!this.card) return; // This should never happen, but better safe than sorry.
+    const response = await this.ai.getRating(this.value, this.card);
+
+    response.accept ? this.displaySuccessTask(response) : this.displayFailureTask(response);
   }
 
-  async displaySuccessTask() {
-
-    const card = await firstValueFrom(this.card);
+  async displaySuccessTask(feedback: Feedback) {
 
     // Consider fading out the background.
     const dialogRef = this.dialog.open(SuccessDialog,
       {
-        data: { card: card },
+        data: { card: this.card, feedback, },
         width: '400px', // Same width as the main content.
       }
     );
 
     dialogRef.afterClosed().subscribe(result => {
       // DEBUG: realistically, there shouldn't be a check here.
-      if (result) this.stopRinging();
+      // if (result) this.stopRinging();
     });
   }
 
-  async displayFailureTask() {
-    const card = await firstValueFrom(this.card);
-
+  async displayFailureTask(feedback: Feedback) {
     // Consider fading out the background.
     const dialogRef = this.dialog.open(FailureDialog,
       {
-        data: { card: card },
+        data: { card: this.card, feedback, },
         width: '400px', // Same width as the main content.
       }
     );
 
     dialogRef.afterClosed().subscribe(_result => {
-      this.skipTask(card.id);
+      if (!this.card) return; // This should never happen, but better safe than sorry.
+      this.skipTask(this.card.id);
       // TODO: Implement the logic for the failure dialog.
     });
   }
@@ -138,8 +140,11 @@ export class SuccessDialog {
   repeatEffect: boolean = false;
   card: Card;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {card: Card}) {
+  feedback: Feedback;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {card: Card, feedback: Feedback}) {
     this.card = data.card;
+    this.feedback = data.feedback;
 
     // Has to be called in the constructor.
     // Somehow the canvas-confetti library doesn't work right if it's called in ngOnInit.
@@ -191,8 +196,10 @@ export class SuccessDialog {
 })
 export class FailureDialog {
   card: Card;
+  feedback: Feedback;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: {card: Card}) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: {card: Card, feedback: Feedback}) {
+    this.feedback = data.feedback;
     this.card = data.card;
   }
 }

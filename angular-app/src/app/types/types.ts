@@ -36,3 +36,9 @@ export enum dbDocPaths {
     clockState = dbColPaths.clock + '/state',
     wakeOptions = dbColPaths.clock + '/wakeOptions',
 }
+
+export interface Feedback {
+    score: number; // 0-100
+    feedback: string;
+    accept: boolean; // If the AI thinks the answer is correct.
+}

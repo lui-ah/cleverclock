@@ -2,11 +2,11 @@
 <h1 mat-dialog-title>Womp Womp...</h1>
 <mat-dialog-content class="mat-typography">
   <p>
-    <b>Dein Feedback:</b>"Falsch, aber immerhin hast du es versucht!"
+    <b>Dein Feedback:</b>"{{ feedback.feedback }}"
     <!-- To get this text based on user input, I have something special in mind. -->
   </p>
   <p>
-    <b>Score:</b> 10 Punkte!
+    <b>Score:</b> {{ feedback.score }} Punkte!
   </p>
   <p>
     <b>Rückseite:</b> {{card.back}} 

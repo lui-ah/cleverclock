@@ -9,7 +9,7 @@
     
     @if (display | async; as display) { @if (display.anki) {
         <div id="task-wrapper">
-            <div id="task-display" *ngIf="card | async as card">
+            <div id="task-display" *ngIf="card">
                 <div class="task">
                     <div class="description">Aufgabe {{card.id}} </div>
                     <mat-divider></mat-divider>
@@ -24,7 +24,7 @@
         <div id="task-field">
             <mat-form-field subscriptSizing="dynamic">
                 <mat-label> Deine Lösung </mat-label>
-                <textarea cdkTextareaAutosize matInput type="text" [(ngModel)]="value"></textarea>          
+                <textarea maxlength="160" cdkTextareaAutosize matInput type="text" [(ngModel)]="value"></textarea>          
                 @if (value) {
                   <button matSuffix mat-icon-button aria-label="Clear" (click)="value=''">
                     <mat-icon>close</mat-icon>
