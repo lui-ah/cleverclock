@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from "@angular/material/divider";
-import { Observable, Subscription, firstValueFrom, map, take, timer } from 'rxjs';
+import { Observable, Subscription, map, take, timer } from 'rxjs';
 import { DatabaseService } from '../database.service';
 import { ActivatedRoute } from '@angular/router';
 import { Card, Feedback, SwitchOption } from '../types/types';
@@ -13,7 +13,7 @@ import { DialogModule } from '@angular/cdk/dialog';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import confetti from 'canvas-confetti'; // Import the confetti library, most web-dev thing I've ever done.
 import { SmartRatingService } from '../smart-rating.service';
-
+import {MatSnackBar } from '@angular/material/snack-bar';
 @Component({
     selector: 'app-ringing',
     standalone: true,
@@ -33,15 +33,22 @@ import { SmartRatingService } from '../smart-rating.service';
 })
 export class RingingComponent {
   time: number;
-  timeSubscribtion: Subscription;
-
   value: string = '';
+  makingRequest: boolean = false;
   card: Card | undefined;
+
   cards: Observable<Card[]>;
-  
   display: Observable<SwitchOption<boolean>>;
 
-  constructor(public dialog: MatDialog, private route: ActivatedRoute, private db: DatabaseService, private ai: SmartRatingService) {
+  timeSubscribtion: Subscription;
+
+  constructor(
+    public dialog: MatDialog,
+    private route: ActivatedRoute, 
+    private db: DatabaseService,
+    private ai: SmartRatingService,
+    private _snackBar: MatSnackBar
+  ) {
     this.time = Date.now();
 
     const time = timer(0, 500).pipe(map(() => Date.now()));
@@ -72,15 +79,26 @@ export class RingingComponent {
     console.log(this.card);
   }
 
-  ngOnDestroy() {
-    this.timeSubscribtion.unsubscribe();
-  }
-
   async determineSuccess() {
     if(!this.card) return; // This should never happen, but better safe than sorry.
+    
+    this.openSnackBar('Wir denken sehr scharf nach...', 'Ok', 1500); // The request is hella fast, but it's nice to have a loading indicator.
+    this.makingRequest = true;
     const response = await this.ai.getRating(this.value, this.card);
+    this.makingRequest = false;
+
+    this.value = ''; // Clear the input field.
 
     response.accept ? this.displaySuccessTask(response) : this.displayFailureTask(response);
+  }
+
+  stopRinging() {
+    this.db.setRinging(false);
+  }
+
+  scanNFC() {
+    // TODO: Implement NFC scanning.
+    // this.stopRinging();
   }
 
   async displaySuccessTask(feedback: Feedback) {
@@ -115,13 +133,14 @@ export class RingingComponent {
     });
   }
 
-  stopRinging() {
-    this.db.setRinging(false);
+  openSnackBar(message: string, action: string, duration: number = 2000) {
+    this._snackBar.open(message, action, {
+      duration,
+    });
   }
 
-  scanNFC() {
-    // TODO: Implement NFC scanning.
-    this.stopRinging();
+  ngOnDestroy() {
+    this.timeSubscribtion.unsubscribe();
   }
 }
 
@@ -136,8 +155,6 @@ export class RingingComponent {
   ],
 })
 export class SuccessDialog {
-  interval: any;
-  repeatEffect: boolean = false;
   card: Card;
 
   feedback: Feedback;
@@ -166,21 +183,6 @@ export class SuccessDialog {
         zIndex: 1001, // Make sure it's on top of the dialog, which is 1000.
       }); 
     }, 80);
-    
-    // remind the user that they did a good job :)
-    this.interval = this.repeatEffect ? setInterval(() => {
-      myConfetti({
-        particleCount: 80,
-        startVelocity: 30,
-        spread: 90,
-        scalar: 1.2,
-        zIndex: 1001,
-      }); 
-    }, 2500) : null;
-  }
-
-  ngOnDestroy() {
-    clearInterval(this.interval);
   }
 }
 
