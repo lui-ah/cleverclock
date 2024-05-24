@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, isDevMode } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { DatabaseService } from './database.service';
 import { Subscription } from 'rxjs';
@@ -15,6 +15,9 @@ export class AppComponent {
   
   constructor(dataBaseService: DatabaseService, router: Router) {
     this.isRingingSubscription = dataBaseService.isRinging.subscribe(isRinging => {
+      if (isDevMode()) {
+        return; // don't redirect in dev mode
+      }
       router.navigate([isRinging ? 'ringing' : 'settings']); // redirect to the ringing page if the alarm is ringing
       // This simplifies navigation. No need for a nav-bar.
     });

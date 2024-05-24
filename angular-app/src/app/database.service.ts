@@ -116,21 +116,25 @@ export class DatabaseService {
       throw new TypeError('Es werden nur .apkg Dateien unterstützt.');
     }
     
-    const addMessage = httpsCallable<{fileBase64: string}>(this.functions, FunctionsEndpoints.getCards);
+    const addMessage = httpsCallable<{fileBase64: string},  { cards: string[] }>(this.functions, FunctionsEndpoints.getCards);
 
     const res = await addMessage({
       fileBase64: await this.getBase64(file),
+    }).catch(err => {
+      throw new Error(err.message);
     });
 
-    const cardStrings = (res.data as { cards: string[] }).cards;
+    const cardStrings = res.data.cards;
 
     const cards = cardStrings.map(
       card => {
         // Format: "absoluto (adj)<img src="paste-4562608183050241.jpg" />absolute"
+        // or: "absoluto (adj)absolute"
         const fields = card.split(''); // Unicode U+001F // turn out, that is called INFORMATION SEPARATOR ONE. Because commas would be too easy.
-        const [front, _image, back] = fields; // if there is no image, I... I have to check for that...
-        // The images are probably stored in the media folder, but I won't bother with that for now.
-        // This is just a demo, so as long as this works for one file, it's fine.
+        const [front, backOrImage, backOrUndefined] = fields; // if there is no image, the back is the last field.
+        // The order and formatting is prob specified in some table, but this is just a demo.
+
+        const back = backOrUndefined ? backOrUndefined : backOrImage;
 
         return {
           front,
@@ -138,7 +142,13 @@ export class DatabaseService {
           back,
         } as CardNoId;
       }
-    )
+    ).filter(card => card.front && card.back); // Filter out empty cards. (There are some in the demo file.
+
+    if (cards.length === 0) {
+      throw new Error('Die Datei enthält keine Karten.');
+    } else if (cards.length > 30) {
+      throw new Error('Die Datei enthält zu viele Karten. Bitte wählen Sie eine Datei mit max 30 Karten.');
+    }
 
     return cards;
   }

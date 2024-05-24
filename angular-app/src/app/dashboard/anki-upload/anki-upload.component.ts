@@ -63,32 +63,29 @@ export class AnkiUploadComponent {
   }
 
   async uploadFile(files: File[]) {
+    if(!files.length) return;
+    
     const file = files[0]; // We only support one file at a time.
     let cards: CardNoId[] = [];
-    let wantsToUpload: boolean = false;
+
+    this._snackBar.open("Eine Sekunde...", "Ok", {
+      duration: 1000,
+    });
     
-    try { // Hella ugly, but it works.
-      this._snackBar.open("Eine Sekunde...", "Ok", {
-        duration: 1000,
-      });
-
+    try {
       cards = await this.db.getCards(file);
-
-      if (cards.length > 30) {
-        const errorString = `Whoa, ergeizig?! ${cards.length} Karten sind zu viel. Bitte Maximl 30 Karten hochladen.`;
-        this.openSnackBar(errorString, 'Ok');
-        return;
-      }
-
-      wantsToUpload = await firstValueFrom(this.openDialog(cards.length).afterClosed());
     } catch (error) {
       if (error instanceof TypeError) {
         this.openSnackBar(error.message, 'Ok');
-        return;
+      } else if (error instanceof Error) {
+        this.openSnackBar(error.message, 'Ok');
       }
+      return;
     }
+
+    const wantsToUpload = await firstValueFrom(this.openDialog(cards.length).afterClosed());
     
-    if (wantsToUpload && !!cards.length) {
+    if (wantsToUpload) {
       cards.forEach(async item => await this.db.uploadCard(item));
     }
   }

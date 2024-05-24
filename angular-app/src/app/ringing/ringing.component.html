@@ -13,7 +13,8 @@
                 <div class="task">
                     <div class="description">Aufgabe</div>
                     <mat-divider></mat-divider>
-                    <div class="content">{{card.front}}</div>    
+                    <div class="content" [innerHTML]="card.front" ></div>    
+                    <!-- This is safe, trust -->
                 </div>
                 <div class="actions">
                     <div class="skip" (click)="skipTask(card.id)">skip</div>

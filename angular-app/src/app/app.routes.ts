@@ -35,3 +35,11 @@ export const routes: Routes = [
         }
     },
 ];
+
+export const routesDev = routes.map(route => (
+    {
+        ...route,
+        canActivate: [],
+        canDeactivate: [] 
+    }
+));
