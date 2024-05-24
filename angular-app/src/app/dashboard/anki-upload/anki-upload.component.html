@@ -2,7 +2,10 @@
     <div class="top">
         <div> Aufgaben verwalten </div>
     </div>
-    <ngx-file-drag-drop [emptyPlaceholder]="(hasPointingDevice ? 'Drag & Drop oder hier klicken.' : 'Hier Tippen für Upload.')"></ngx-file-drag-drop>
+    <small>
+      Beim Deck exportieren, achte darauf, "Support older Anki versions" zu aktivieren. Neuere Anki-Versionen benutzen eine Kompressionsmethode, die wir nicht unterstützen.
+    </small>
+    <ngx-file-drag-drop (valueChanged)="uploadFile($event)" [emptyPlaceholder]="(hasPointingDevice ? 'Drag & Drop oder hier klicken.' : 'Hier Tippen für Upload.')"></ngx-file-drag-drop>
     <mat-accordion >
         <mat-expansion-panel>
             <mat-expansion-panel-header>

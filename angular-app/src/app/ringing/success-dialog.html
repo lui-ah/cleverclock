@@ -9,7 +9,7 @@
     <b>Score:</b> {{ feedback.score }} Punkte!
   </p>
   <p>
-    <b>Rückseite:</b> {{card.back}} 
+    <b>Rückseite:</b> <span [innerHTML]="card.back"></span> 
   </p>
 </mat-dialog-content>
 <mat-dialog-actions>
