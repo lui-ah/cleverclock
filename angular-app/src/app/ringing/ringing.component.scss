@@ -1,0 +1,263 @@
+@use "../../variables" as v;
+
+#background-wrapper {
+    position: fixed;
+    // this shouuld fix some issues with some screens.
+    // Future proofing, if the content gets too long
+
+    top: 0;
+    left: 0;
+
+    height: 100vh;
+    width: 100vw;
+
+    overflow: hidden;
+
+    background: rgb(255, 255, 255);
+    background: radial-gradient(circle, rgba(193, 105, 105, 0.230) 0%, rgba(255, 255, 255, 0) 92%);
+    #background {
+        position: absolute;
+        top: 50%;
+        left: -130%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;   
+    
+        height: 250vh;
+        width: 250vw;
+    
+        background: url("../../assets/GETUP2.svg");
+        background-size: 37% auto; // Adjusts the Text size. To adjust the spacing, adjust the SVG.
+        background-repeat: repeat;
+        
+        // background-position: 85.8% 0;
+        // This file is full of magic number.
+        // this one of them. Every mutliple of 85.8% is one rotation of the bg.
+        // but we can just use a very high animation length.
+        
+        animation: bg-scroll 500s linear infinite; 
+        // This, aswell as the background-position animation value must be some very high value. 
+        
+        transform-origin: top left;
+        transform: rotate(-45deg); // Looks best I feel.
+    
+        // filter: grayscale(0.97) brightness(2.25); // These kind of work against each other. Very hard to make look good.
+        // Also filter is super inefficient. Consider changing this in the SVG.
+    }
+}
+
+@media (min-width: 650px) { // Slows down the animation on wider screens
+    #background-wrapper #background {
+        background-size: 47% auto;
+    }
+}
+
+@media (min-width: 1100px)  { // The bg begins to break down here
+    #background-wrapper #background {
+        height: 100vh;
+        width: 100vw;
+
+        top: unset;
+        left: unset;
+
+        background-size: 75% auto;
+
+        transform: rotate(0deg);
+    }
+}
+
+#wrapper {
+    position: relative; // To have the bg-wrapper in the bg
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+
+
+    margin: 10%;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    #display-time {
+        display: flex;
+        justify-content: center;
+
+        margin-top: 40px;
+        margin-bottom: 20px;
+        padding: 20px;
+
+        background-color: rgb(255, 255, 255);
+
+        border-radius: v.$border-radius;
+
+        box-shadow: v.$box-shadow;
+
+        font-size: 38pt;
+        font-weight: 600;
+        letter-spacing: 2px;
+
+
+        animation: jump-shaking 1s infinite;
+    } 
+    
+    #task-wrapper {
+        display: flex;
+        justify-content: center;
+
+        height: 230px;
+
+        padding: 20px;
+
+        background-color: #ffffff;
+
+        border-radius: v.$border-radius;
+        
+        box-shadow: v.$box-shadow;
+
+        #task-display {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            height: 100%;
+            width: 100%;
+
+            background-color: #ffffff;
+
+            border-radius: inherit;
+
+
+            .description {
+                margin-top: 5px;
+                margin-bottom: 10px;
+
+                font-size: 14pt;
+                font-weight: 500;
+            }
+            .content {
+                margin-top: 10px;
+                
+                font-size: 12pt;
+            }
+            .actions {
+                display: flex;
+                justify-content: start;
+
+                font-size: 12pt;
+                color: rgb(116, 116, 116);
+                text-decoration: underline;
+
+                cursor: pointer;
+            }
+        }
+    }
+          
+    #task-field {
+        width: 100%;
+
+        margin-top: 20px;
+        padding: 20px;
+
+        background-color: #ffffff;
+
+        border-radius: v.$border-radius;
+
+        box-shadow: v.$box-shadow;
+
+        mat-form-field {
+            display: flex;
+            align-items: center;
+
+            width: inherit;
+        }
+
+        button.submit {
+            width: 100%;
+            padding: 25px;
+            margin-top: 20px;
+        }
+    }
+
+    .text-divider {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        
+        width: 100%;
+
+        margin-top: 20px;
+        margin-bottom: 20px;
+
+        .line {
+            flex: 1;
+        }
+          
+        .text {
+            color: rgb(116, 116, 116);
+
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    }
+
+    .big-button {
+        display: flex;
+        justify-content: center;
+
+        margin-bottom: 20px;
+
+        button {
+            width: 100%;
+            padding: 30px;
+        }
+    }
+}
+
+// Animations
+
+@keyframes jump-shaking {
+    0% { transform: translateY(0) }
+    5% { transform: translateY(-11px) }
+    10% { transform: translateY(-11px) rotate(3.5deg) }
+    20% { transform: translateY(-11px) rotate(-3.5deg) }
+    25% { transform: translateY(-11px) rotate(3.25deg) }
+    35% { transform: translateY(-11px) rotate(-3.25deg) }
+    45% { transform: translateY(0) rotate(0) }
+    100% { transform: translateY(0) rotate(0) }
+}
+@keyframes bg-scroll {
+    0% {
+      background-position: 0% 0;
+    }
+    100% {
+      background-position: 5000% 0;
+    }
+}
+
+#confetti {
+    position: absolute;
+    pointer-events: none;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 1001;
+}
+
+[mat-dialog-title] {
+    text-align: center;
+    font-size: 32pt;
+    margin: 25px;
+    margin-left: 0;
+}
+
+mat-dialog-actions {
+    button {
+        width: 100%;
+
+        margin: 15px;
+        padding: 25px;
+    }
+}

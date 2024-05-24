@@ -1,0 +1,35 @@
+<div class="settings-wrapper">
+    <div class="top">
+        <div> Wechkmethoden </div>
+    </div>
+    
+     <ng-container *ngIf="options | async as options">
+        <mat-slide-toggle
+            [(ngModel)]="options.anki"
+            (change)="updateSwitch('anki', options.anki)"
+        >
+            Anki
+        </mat-slide-toggle>
+
+        <mat-slide-toggle
+            [(ngModel)]="options.nfc"
+            (change)="updateSwitch('nfc', options.nfc)"
+        >
+            NFC
+        </mat-slide-toggle>
+
+        <mat-slide-toggle
+            [(ngModel)]="options.quickOff"
+            (change)="updateSwitch('quickOff', options.quickOff)"
+        >
+            Schnell ausschalten
+        </mat-slide-toggle>
+    </ng-container>
+     
+
+    <!-- 
+        It seems like using ngFor cause flickering when the list is updated.
+        This isn't a big deal since we only have three switches.
+        But you could implement a custom trackBy function to fix this.
+    -->
+</div>

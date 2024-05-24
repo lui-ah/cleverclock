@@ -1,0 +1,11 @@
+<div class="settings-wrapper">
+    <div class="top" *ngIf="currentTime | async as time">
+        <div>Nächster Timer: {{ isToday(time) ? 'Heute' : 'Morgen' }} um <b> {{ time | date: 'H:mm' }} </b></div>
+    </div>
+    <mat-form-field>
+        <mat-label>Wählen</mat-label>
+        <input readonly name="date" matInput [ngxTimepicker]="picker" id="picker" [(ngModel)]="inputVal">
+      </mat-form-field>
+    <ngx-material-timepicker #picker [minutesGap]="5"></ngx-material-timepicker>
+    <button mat-flat-button color="primary" (click)="setTime()" [disabled]="!inputVal">Sichern</button>
+</div>
