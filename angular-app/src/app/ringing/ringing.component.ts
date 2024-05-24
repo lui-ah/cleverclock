@@ -112,8 +112,7 @@ export class RingingComponent {
     );
 
     dialogRef.afterClosed().subscribe(result => {
-      // DEBUG: realistically, there shouldn't be a check here.
-      // if (result) this.stopRinging();
+      this.stopRinging();
     });
   }
 
@@ -126,10 +125,9 @@ export class RingingComponent {
       }
     );
 
-    dialogRef.afterClosed().subscribe(_result => {
+    dialogRef.afterClosed().subscribe(() => {
       if (!this.card) return; // This should never happen, but better safe than sorry.
       this.skipTask(this.card.id);
-      // TODO: Implement the logic for the failure dialog.
     });
   }
 
