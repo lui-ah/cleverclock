@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>{{data.side == 'front' ? 'Vorderseite' : 'Hinterseite'}}</h2>
 <mat-dialog-content>
   <mat-form-field>
-    <textarea matInput [(ngModel)]="text"></textarea>
+    <textarea maxlength="300" matInput [(ngModel)]="text"></textarea>
   </mat-form-field>
   <button mat-flat-button color="primary" (click)="saveSide()" [disabled]="!text" mat-dialog-close>Sichern</button>
 </mat-dialog-content>

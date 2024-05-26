@@ -10,11 +10,20 @@ import { firebaseConfig } from "../environment/environment.prod";
 import { isDevMode } from '@angular/core';
 import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
 
-const useProduction = false;
+const functionsForceProduction = false;
+
+export const globalConfig = {
+  isDevMode: isDevMode(),
+  forceDebug: true,
+  functionsForceProduction,
+  // This could be dynamic in the future.
+  // Inside GC, there is no way to set a budget.
+  // I don't want to wake up with a 1000$ bill.
+};
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(isDevMode() ? routesDev : routes),
+    provideRouter((isDevMode() || globalConfig.forceDebug) ? routesDev : routes),
     provideAnimations(),
     // This was wrappen in importProvidersFrom
     // This was broken in 17.1.0 https://github.com/angular/angularfire/issues/3526
@@ -25,7 +34,7 @@ export const appConfig: ApplicationConfig = {
     provideVertexAI(() => getVertexAI()),
     provideFunctions(() => {
       const functions = getFunctions()
-      if (isDevMode() && !useProduction) {
+      if (isDevMode() && !functionsForceProduction) {
         connectFunctionsEmulator(functions, 'localhost', 5001);
       }
       return functions

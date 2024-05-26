@@ -75,8 +75,6 @@ export class RingingComponent {
       const filteredCards = cards.filter(card => card.id !== id);
       this.card = filteredCards[Math.floor(Math.random() * filteredCards.length)];
     });
-
-    console.log(this.card);
   }
 
   async determineSuccess() {

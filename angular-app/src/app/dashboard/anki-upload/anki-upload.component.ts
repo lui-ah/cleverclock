@@ -110,7 +110,6 @@ export class AnkiUploadComponent {
     // The slide toggle does not have an invert function, so we have to do it manually.
     // Which is kind of ugly, but it works.
     card.disabled = !event;
-    console.log(card);
     this.db.updateCard(card);
   }
 

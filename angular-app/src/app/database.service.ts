@@ -81,7 +81,6 @@ export class DatabaseService {
   }
 
   deleteCard(card: Card) {
-    console.log(card);
     if (!card.id) {
       throw new Error('Card must have a id attached to it.'); 
     }
@@ -107,7 +106,6 @@ export class DatabaseService {
  
 
   async getCards(file: File): Promise<CardNoId[]>  {
-
     if(!file) {
       throw new Error('Keine Datei ausgewählt.');
     } else if (file.name.endsWith('csv')) {
@@ -115,12 +113,20 @@ export class DatabaseService {
     } else if(!file.name.endsWith('.apkg')) {
       throw new TypeError('Es werden nur .apkg Dateien unterstützt.');
     }
-    
     const addMessage = httpsCallable<{fileBase64: string},  { cards: string[] }>(this.functions, FunctionsEndpoints.getCards);
 
-    const res = await addMessage({
+    const res = await addMessage({ // This might throw if billing is disabled/unavailable but also for 
       fileBase64: await this.getBase64(file),
     }).catch(err => {
+      if (err.message === 'internal') {
+        // If this throws, it's probably a billing error. But this is planned.
+        // Billing should only be re-enabled when we present.
+        // Google Cloud is awesome, but if something goes wrong...
+        // I've seen some horror stories on reddit of like $15k bills,
+        // because something was running in a loop. No (easy) way to set a spending limit (why?).
+        // better safe than sorry.
+        throw new Error('Dev Mode; Abrechnung ist wahrscheinlich deaktiviert. Schalten Sie die Abrechnung ein, um diese Funktion zu verwenden. (ggf. muss dieser Dienst auch erneut hochgefahren werden)');
+      }
       throw new Error(err.message);
     });
 
