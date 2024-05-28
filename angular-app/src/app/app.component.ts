@@ -1,8 +1,9 @@
-import { Component, isDevMode } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component , isDevMode } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { DatabaseService } from './database.service';
-import { Subscription } from 'rxjs';
+import { Subscription, filter, map } from 'rxjs';
 import { globalConfig } from './app.config';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import { globalConfig } from './app.config';
 export class AppComponent {
   isRingingSubscription: Subscription;
   
-  constructor(dataBaseService: DatabaseService, router: Router) {
+  constructor(dataBaseService: DatabaseService, router: Router, titleService: Title) {
     this.isRingingSubscription = dataBaseService.isRinging.subscribe(isRinging => {
       if (isDevMode() || globalConfig.forceDebug) {
         return; // don't redirect in dev mode
@@ -22,6 +23,17 @@ export class AppComponent {
       router.navigate([isRinging ? 'ringing' : 'settings']); // redirect to the ringing page if the alarm is ringing
       // This simplifies navigation. No need for a nav-bar.
     });
+
+    // Get current location
+    const route = router.events.pipe(
+      filter(event => 
+        (event instanceof NavigationEnd) &&
+        (router.url.endsWith('ringing') || router.url.endsWith('settings')) // Only change the title if we are on the ringing or settings page
+      ), map(() => 
+        router.url.charAt(1).toUpperCase() + router.url.slice(2) // Capitalize the first letter
+      )
+    );
+    route.subscribe(url => titleService.setTitle(url));
   }
   
   ngOnDestroy() {
