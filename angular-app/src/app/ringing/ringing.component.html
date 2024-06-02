@@ -48,12 +48,19 @@
         }
 
         <div class="big-button">
-            <button mat-raised-button (click)="scanNFC()"> scanner starten <mat-icon>nfc</mat-icon> </button>
+            @if (nfc.supportsNfc()) {
+                <button mat-raised-button (click)="scanNFC()"> scanner starten <mat-icon>nfc</mat-icon> </button>
+            } @else {
+                <button mat-raised-button disabled> NFC nicht verfügbar <mat-icon>nfc</mat-icon> </button>
+            }
         </div>
     }}
 
     <!-- this is the fallback, so the user doens't lock themself out -->
-    @if (display | async; as display) { @if(display.quickOff || (!display.anki && !display.nfc)) {
+    @if (display | async; as display) { @if(
+        display.quickOff || 
+        (!display.anki && (!display.nfc || !nfc.supportsNfc()))
+        ) {
         @if (display.anki || display.nfc) {
             <div class="text-divider">
                 <div class="line"><mat-divider></mat-divider></div>

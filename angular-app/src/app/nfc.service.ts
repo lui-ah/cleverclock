@@ -21,6 +21,24 @@ export interface ReadingInitializedEvent {
   controller: AbortController;
 }
 
+/**
+   * Check if the browser supports Web NFC.
+   * @returns A function that throws an error if the browser does not support Web NFC.
+   */
+function SupportsNfc() {
+  return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+    const originalMethod = descriptor.value;
+
+    descriptor.value = function (...args: any[]) {
+      // Often no error is thrown if the browser does not support Web NFC.
+      // This is why we have to throw an error ourselves.
+      if(!("NDEFReader" in window)) throw new Error("Web NFC is not supported in this browser.");
+      return originalMethod.apply(this, args);
+    };
+    return descriptor;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -86,7 +104,7 @@ export class NfcService {
    * Check if the browser supports Web NFC.
    * @returns true if the browser supports Web NFC, false otherwise.
    */
-  supportsNfc() {
+  supportsNfc(): boolean {
     return "NDEFReader" in window;
   }
 
@@ -98,6 +116,7 @@ export class NfcService {
    * If the browser does not support Web NFC, it completes without emitting any value.
    * If the user denies permission, it emits an error.
    */
+  @SupportsNfc()
   startWriting(message: string, options?: ScannerOptions): Observable<AbortController> {
     // TODO: remove the alert statements.
     return new Observable((subscriber) => {
@@ -159,6 +178,7 @@ export class NfcService {
    * If the browser does not support Web NFC, it completes without emitting any value.
    * If the user denies permission, it emits an error.
    */
+  @SupportsNfc()
   startReading(options?: ScannerOptions): Observable<ReadingInitializedEvent> {
     return new Observable<ReadingInitializedEvent>((subscriber) => {
       const abort = new AbortController(); 
