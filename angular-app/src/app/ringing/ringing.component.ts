@@ -14,6 +14,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/d
 import confetti from 'canvas-confetti'; // Import the confetti library, most web-dev thing I've ever done.
 import { SmartRatingService } from '../smart-rating.service';
 import {MatSnackBar } from '@angular/material/snack-bar';
+import { NfcService } from '../nfc.service';
 @Component({
     selector: 'app-ringing',
     standalone: true,
@@ -47,7 +48,8 @@ export class RingingComponent {
     private route: ActivatedRoute, 
     private db: DatabaseService,
     private ai: SmartRatingService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    public nfc: NfcService,
   ) {
     this.time = Date.now();
 
@@ -95,6 +97,9 @@ export class RingingComponent {
   }
 
   scanNFC() {
+    this.nfc.matchesCode().subscribe((message) => {
+      alert(message ? 'Code Matches' : 'Code does not match')
+    }); // This is just a placeholder.
     // TODO: Implement NFC scanning.
     // this.stopRinging();
   }

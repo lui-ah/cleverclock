@@ -63,3 +63,13 @@ body {
       padding-bottom: 20px;
   }
 }
+
+.big-button {
+  display: flex;
+  justify-content: center;
+
+  button {
+      width: 100%;
+      padding: 30px;
+  }
+}
