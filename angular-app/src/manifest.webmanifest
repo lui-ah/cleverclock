@@ -1,7 +1,7 @@
 {
   "name": "CleverClock",
   "short_name": "CleverClock",
-  "theme_color": "#eb4034",
+  "theme_color": "#f0f2f8",
   "background_color": "#ffffff",
   "display": "fullscreen",
   "orientation": "portrait",
