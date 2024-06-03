@@ -137,10 +137,9 @@ export class NfcService {
         // The scanner is not active anymore anyway.
       };
 
-      const ndef = new NDEFReader();
+      const ndef = new NDEFReader(); // Does this ask for permission?
 
       ndef.write(message, {overwrite: true, signal: abort.signal}).then(() => {
-        alert('Successfully wrote to NFC tag');
         subscriber.next(abort);
       }).catch((error) => {
         subscriber.error(error);
@@ -209,7 +208,6 @@ export class NfcService {
       // Handle reading events
       const onReading = (event: NDEFReadingEvent) => {
         const data = decoder.decode(event.message.records[0].data);
-        alert('Read message from NFC tag: ' + data);
         subscriber.next({ message: data, controller: abort });
       };
 

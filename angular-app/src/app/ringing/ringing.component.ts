@@ -98,10 +98,9 @@ export class RingingComponent {
 
   scanNFC() {
     this.nfc.matchesCode().subscribe((message) => {
-      alert(message ? 'Code Matches' : 'Code does not match')
+      alert(message ? 'Code stimmt.' : 'Code stimmt nicht.')
+      this.stopRinging();
     }); // This is just a placeholder.
-    // TODO: Implement NFC scanning.
-    // this.stopRinging();
   }
 
   async displaySuccessTask(feedback: Feedback) {
@@ -114,7 +113,7 @@ export class RingingComponent {
       }
     );
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(() => {
       this.stopRinging();
     });
   }

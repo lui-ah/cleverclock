@@ -21,12 +21,12 @@ export class AppComponent {
   routerEventSubscription: Subscription;
   controller: AbortController = new AbortController();
 
-  isActive: Observable<boolean>;
+  isScanning: Observable<boolean>;
   
   constructor(dataBaseService: DatabaseService, router: Router, public nfc: NfcService, _snackBar: MatSnackBar) {
     // This is used to display the progress bar when the NFC reader is active.
     // TODO: We have the snackbar for that. We should consider removing this.
-    this.isActive = nfc.isActive.valueChanges.pipe(map(event => event.active));
+    this.isScanning = nfc.isActive.valueChanges.pipe(map(event => event.active));
 
     // Helper function for the filter function.
     const isReadingActiveEvent = (event: NfcStatusEvent): event is NfcReadingActiveEvent => event.active;
@@ -43,7 +43,7 @@ export class AppComponent {
     // This is used to keep track of the current controller.
     const handleController = tap((val: NfcReadingActiveEvent) => {
       this.controller = val.controller;
-    })
+    });
 
     // This is used to dismiss the snackbar if the NFC reader is inactive.
     const clearIfInactive = tap((val: NfcStatusEvent) => !val.active && _snackBar.dismiss());

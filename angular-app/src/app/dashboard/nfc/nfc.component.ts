@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NfcService } from '../../nfc.service';
 import { Subscription } from 'rxjs';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-nfc',
@@ -10,14 +11,15 @@ import { Subscription } from 'rxjs';
   imports: [
     MatIconModule,
     MatButtonModule,
+    MatSnackBarModule,
   ],
   templateUrl: './nfc.component.html',
   styleUrl: './nfc.component.scss'
 })
 export class NfcComponent {
-  constructor(public nfc: NfcService) { }
+  constructor(public nfc: NfcService, private _snackBar: MatSnackBar) { }
 
   writeNfc() {
-    this.nfc.writeCode().subscribe();
+    this.nfc.writeCode().subscribe(() => this._snackBar.open('NFC Tag beschrieben', 'OK' , { duration: 2000 }));
   }
 }
