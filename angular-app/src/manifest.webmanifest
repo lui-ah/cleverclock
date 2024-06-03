@@ -1,9 +1,10 @@
 {
-  "name": "angular-app",
-  "short_name": "angular-app",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
-  "display": "standalone",
+  "name": "CleverClock",
+  "short_name": "CleverClock",
+  "theme_color": "#eb4034",
+  "background_color": "#ffffff",
+  "display": "fullscreen",
+  "orientation": "portrait",
   "scope": "./",
   "start_url": "./",
   "icons": [
