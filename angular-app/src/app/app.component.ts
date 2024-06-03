@@ -6,7 +6,7 @@ import { useDev } from './app.config';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { AsyncPipe } from '@angular/common';
 import { NfcService, NfcStatusEvent, NfcReadingActiveEvent } from './nfc.service';
-import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSnackBar, MatSnackBarModule, MatSnackBarRef} from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -32,13 +32,18 @@ export class AppComponent {
     // Helper function for the filter function.
     const isReadingActiveEvent = (event: NfcStatusEvent): event is NfcReadingActiveEvent => event.active;
 
+    let snackBarRef: MatSnackBarRef<any> | null = null;
+
     // This is used to display a message when the NFC reader is active.
-    const displayMessage = switchMap((value: NfcReadingActiveEvent) => 
-      _snackBar.open('NFC reader ist aktiv', 'Stop').onAction().pipe(
+    const displayMessage = switchMap((value: NfcReadingActiveEvent) => {
+      snackBarRef = _snackBar.open('NFC reader ist aktiv', 'Stop');
+      return snackBarRef.onAction().pipe(
         tap(() => {
           value.controller.abort("NFC reader stopped by user");
         })
       )
+    }
+      
     );
 
     // This is used to keep track of the current controller.
@@ -47,7 +52,7 @@ export class AppComponent {
     });
 
     // This is used to dismiss the snackbar if the NFC reader is inactive.
-    const clearIfInactive = tap((val: NfcStatusEvent) => !val.active && _snackBar.dismiss());
+    const clearIfInactive = tap((val: NfcStatusEvent) => !val.active && snackBarRef?.dismiss());
 
     // We want to display a message when the NFC reader is active.
     this.scanningSubscription = nfc.isActive.valueChanges.pipe(

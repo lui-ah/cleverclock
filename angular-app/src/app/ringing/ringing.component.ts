@@ -98,9 +98,13 @@ export class RingingComponent {
 
   scanNFC() {
     this.nfc.matchesCode().subscribe((message) => {
-      alert(message ? 'Code stimmt.' : 'Code stimmt nicht.')
-      if (message) this.stopRinging();
-    }); // This is just a placeholder.
+      if (message) {
+        this._snackBar.open('Timer wird gestoppt.', 'Ok', { duration: 2000 });
+        this.stopRinging();
+      } else {
+        this._snackBar.open('Das ist kein gültiger NFC Tag.', 'Ok', { duration: 2000 });
+      }
+    });
   }
 
   async displaySuccessTask(feedback: Feedback) {
