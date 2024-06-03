@@ -1,31 +1,42 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, firstValueFrom, map, take } from 'rxjs';
 
-type ScannerOptions = {
-  timeout: number;
+type ScannerConfig = {
+  controller?: AbortController;
+  timeout?: number;
 };
 
-export interface ReadingActiveEvent {
+export interface NfcReadingActiveEvent {
   active: true;
   controller: AbortController;
 }
 
-export interface ReadingInactiveEvent {
+export interface NfcReadingInactiveEvent {
   active: false;
 }
 
-export type NfcStatusEvent = ReadingActiveEvent | ReadingInactiveEvent;
+export type NfcStatusEvent = NfcReadingActiveEvent | NfcReadingInactiveEvent;
 
-export interface ReadingInitializedEvent {
+export interface NfcReadingInitializedEvent {
   message: string;
   controller: AbortController;
+}
+
+interface NfcIsActive {
+  value: boolean;
+  valueChanges: BehaviorSubject<NfcStatusEvent>;
+}
+
+interface NfcReadonlyIsActive {
+  value: NfcIsActive["value"];
+  valueChanges: NfcIsActive["valueChanges"] extends BehaviorSubject<infer T> ? Observable<T> : NfcIsActive["valueChanges"];
 }
 
 /**
    * Check if the browser supports Web NFC.
    * @returns A function that throws an error if the browser does not support Web NFC.
    */
-function SupportsNfc() {
+function EnsureNfcSupport() {
   return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
@@ -43,23 +54,24 @@ function SupportsNfc() {
   providedIn: 'root'
 })
 export class NfcService {
-  // TODO: make startReading and startWriting take an abort controller as an argument.
-  // this way we can abort the event before it scans or writes.
-
   // This is the code that we want to write to the NFC tag.
   private code = `TGFzdCBDaHJpc3RtYXM`; // Base64 of the "Last Christmas".
   // The goal here was to make to unmemorable, so that the user would have to scan the NFC tag to get the code.
   // The goal was not to make it secure.
 
   // Here we want to keep track of the current state of the NFC reader.
-  private newController: BehaviorSubject<AbortController>;
+  private newController: BehaviorSubject<AbortController> = new BehaviorSubject(new AbortController());
 
   // This is used to keep track of the current state of the NFC reader.
-  private _isActive: {value: boolean, valueChanges: BehaviorSubject<NfcStatusEvent>};
+  private _isActive: NfcIsActive = {
+    value: false, 
+    valueChanges: 
+      new BehaviorSubject<NfcStatusEvent>({ active: false })
+  };
 
   // We don't want to allow other components to emit new values. 
   // That's why we cast it to a readonly object.
-  public get isActive(): {value: boolean, valueChanges: Observable<NfcStatusEvent>} {
+  public get isActive(): NfcReadonlyIsActive {
     return this._isActive;
   }
 
@@ -68,29 +80,16 @@ export class NfcService {
     this._isActive.valueChanges.next(value);
   }
 
-  constructor() {
-    this.newController = new BehaviorSubject(new AbortController());
-    // Default value is an empty controller.
-    // This is used so that pushAbort always has something to abort
-    this._isActive = {
-      value: false, 
-      valueChanges: 
-        new BehaviorSubject<NfcStatusEvent>({ active: false })
-    };
-    // every time we start reading or writing, we emit a new controller.
-    // The previos value should then be aborted.
-  }
-
   private async pushAbort(controller: AbortController) {
-    const old = await firstValueFrom(this.newController.pipe(take(1)));
+    const oldController = await firstValueFrom(this.newController.pipe(take(1)));
     // This will make sure that we only have one controller at a time.
     // Doing this synchronously is important.
     // If we don't do this we run into all kinds of timing issues.
-    old.signal.removeEventListener('abort', () => {}); 
+    oldController.signal.removeEventListener('abort', () => {}); 
     // We have to remove the listener on the old controller delcared in the previous pushAbort.
     // Or we might run into issues with the isActive value due to timing issues.
     
-    if(!old.signal.aborted) old.abort("Aborted by new controller."); 
+    if(!oldController.signal.aborted) oldController.abort("Aborted by new controller."); 
 
     this.newController.next(controller);
     this.isActive = { active: true, controller: controller };
@@ -116,19 +115,18 @@ export class NfcService {
    * If the browser does not support Web NFC, it completes without emitting any value.
    * If the user denies permission, it emits an error.
    */
-  @SupportsNfc()
-  startWriting(message: string, options?: ScannerOptions): Observable<AbortController> {
-    // TODO: remove the alert statements.
+  @EnsureNfcSupport()
+  startWriting(message: string, config?: ScannerConfig): Observable<AbortController> {
     return new Observable((subscriber) => {
-      const abort = new AbortController(); 
+      const abort = config?.controller || new AbortController(); 
 
       this.pushAbort(abort);
 
-      if (options?.timeout) {
+      if (config?.timeout) {
         setTimeout(() => {
           // This should be a fallback.
-          subscriber.error("Timeout:" + options.timeout + "ms exceeded.");
-        }, options.timeout);
+          subscriber.error(`Timeout: ${config.timeout}ms exceeded.`);
+        }, config.timeout);
       }
       
       abort.signal.onabort = () => { 
@@ -166,8 +164,8 @@ export class NfcService {
    * This observable will complete after the first value is emitted.
    * This is useful for writing a single value to the NFC tag.
    */
-  writeOnce(message: string, options?: ScannerOptions): Observable<void> {
-    return this.startWriting(message, options).pipe(take(1), map(() => undefined));
+  writeOnce(message: string, config?: ScannerConfig): Observable<void> {
+    return this.startWriting(message, config).pipe(take(1), map(() => undefined));
     // This should abort automatically after the first value is emitted.
   }
 
@@ -178,10 +176,10 @@ export class NfcService {
    * If the browser does not support Web NFC, it completes without emitting any value.
    * If the user denies permission, it emits an error.
    */
-  @SupportsNfc()
-  startReading(options?: ScannerOptions): Observable<ReadingInitializedEvent> {
-    return new Observable<ReadingInitializedEvent>((subscriber) => {
-      const abort = new AbortController(); 
+  @EnsureNfcSupport()
+  startReading(config?: ScannerConfig): Observable<NfcReadingInitializedEvent> {
+    return new Observable<NfcReadingInitializedEvent>((subscriber) => {
+      const abort = config?.controller || new AbortController(); 
       
       this.pushAbort(abort); // This is used to notify all OTHER instances that they should abort.
       // but will NOT trigger the firstValueFrom written below.
@@ -190,11 +188,11 @@ export class NfcService {
       // and complete the current observable if it is still running because
       // the reading or writing is aborted anyway.
 
-      if (options?.timeout) {
+      if (config?.timeout) {
         setTimeout(() => {
           // This should be a fallback.
-          subscriber.error("Timeout:" + options.timeout + "ms exceeded.");
-        }, options.timeout);
+          subscriber.error("Timeout:" + config.timeout + "ms exceeded.");
+        }, config.timeout);
       }
 
       abort.signal.onabort = () => { 
@@ -231,6 +229,7 @@ export class NfcService {
       };
     });
   }
+
   /**
    * 
    * @returns An observable that emits the data read from the tag.
@@ -240,8 +239,8 @@ export class NfcService {
    * This observable will complete after the first value is emitted.
    * This is useful for reading a single value from the NFC tag.
    */
-  readOnce(options?: ScannerOptions): Observable<string>{
-    return this.startReading(options).pipe(take(1), map((value) => value.message));
+  readOnce(config?: ScannerConfig): Observable<string>{
+    return this.startReading(config).pipe(take(1), map((value) => value.message));
     // If we only take one, we don't care about the abort controller.
     // This should abort automatically after the first value is emitted.
   }
@@ -254,11 +253,11 @@ export class NfcService {
    * If the browser does not support Web NFC, it completes without emitting any value.
    * If the user denies permission, it emits an error.
    */
-  matchesCode(options?: ScannerOptions): Observable<boolean> {
-    return this.readOnce(options).pipe(take(1), map((data) => data === this.code));
+  matchesCode(config?: ScannerConfig): Observable<boolean> {
+    return this.readOnce(config).pipe(take(1), map((data) => data === this.code));
   }
 
-  writeCode(options?: ScannerOptions): Observable<void> {
-    return this.writeOnce(this.code, options);
+  writeCode(config?: ScannerConfig): Observable<void> {
+    return this.writeOnce(this.code, config);
   }
 }

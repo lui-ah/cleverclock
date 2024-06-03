@@ -5,7 +5,7 @@ import { Observable, Subscription, filter, map, switchMap, tap } from 'rxjs';
 import { useDev } from './app.config';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { AsyncPipe } from '@angular/common';
-import { NfcService, NfcStatusEvent, ReadingActiveEvent } from './nfc.service';
+import { NfcService, NfcStatusEvent, NfcReadingActiveEvent } from './nfc.service';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 
 @Component({
@@ -29,10 +29,10 @@ export class AppComponent {
     this.isActive = nfc.isActive.valueChanges.pipe(map(event => event.active));
 
     // Helper function for the filter function.
-    const isReadingActiveEvent = (event: NfcStatusEvent): event is ReadingActiveEvent => event.active;
+    const isReadingActiveEvent = (event: NfcStatusEvent): event is NfcReadingActiveEvent => event.active;
 
     // This is used to display a message when the NFC reader is active.
-    const displayMessage = switchMap((value: ReadingActiveEvent) => 
+    const displayMessage = switchMap((value: NfcReadingActiveEvent) => 
       _snackBar.open('NFC reader ist aktiv', 'Stop').onAction().pipe(
         tap(() => {
           value.controller.abort("NFC reader stopped by user");
@@ -41,7 +41,7 @@ export class AppComponent {
     );
 
     // This is used to keep track of the current controller.
-    const handleController = tap((val: ReadingActiveEvent) => {
+    const handleController = tap((val: NfcReadingActiveEvent) => {
       this.controller = val.controller;
     })
 
