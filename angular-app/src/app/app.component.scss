@@ -19,4 +19,18 @@
     justify-content: center;
 
     height: 100vh;
+    width: 100vw;
+}
+
+#nfc-bar {
+    position: fixed;
+    bottom: 0; // Do we want this to be at the bottom, or at the top?
+    // bottom is probably better for mobile, but top is better for desktop.
+}
+
+@media screen and (min-width: 700px) {
+    #nfc-bar {
+        top: 0; // This is the desktop version.
+        // Although... what desktop supports NFC?
+    }
 }
