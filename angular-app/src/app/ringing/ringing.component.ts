@@ -99,7 +99,7 @@ export class RingingComponent {
   scanNFC() {
     this.nfc.matchesCode().subscribe((message) => {
       alert(message ? 'Code stimmt.' : 'Code stimmt nicht.')
-      this.stopRinging();
+      if (message) this.stopRinging();
     }); // This is just a placeholder.
   }
 
