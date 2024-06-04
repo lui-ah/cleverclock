@@ -1,3 +1,6 @@
+@if (isScanning | async) {
+    <mat-progress-bar id="nfc-bar" mode="indeterminate" color="primary"></mat-progress-bar>
+}
 <div id="wrapper">
     <div id="phone-wrapper">
         <div id="content-wrapper">

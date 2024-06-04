@@ -1,0 +1,17 @@
+<div class="settings-wrapper">
+    <div class="top">
+        <div>NFC Tag beschreiben</div>
+    </div>
+    <small>
+        Halte dein Handy an den NFC Tag, um ihn zu beschreiben.
+    </small>
+    @if (nfc.supportsNfc()) {
+        <div class="big-button">
+            <button mat-raised-button (click)="writeNfc()"> scanner starten <mat-icon>nfc</mat-icon> </button>
+        </div>
+    } @else {
+        <div class="big-button">
+            <button mat-raised-button disabled> NFC nicht verfügbar <mat-icon>nfc</mat-icon> </button>
+        </div>
+    }
+</div>
