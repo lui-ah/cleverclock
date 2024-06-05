@@ -1,4 +1,4 @@
-# Smart Alarm Clock
+# CleverClock
 
 [<img src="https://cdn.discordapp.com/attachments/1227607174381961279/1247914140786233344/Logo.png?ex=6661c21c&is=6660709c&hm=872bbb25ec3eba294df7bfa0ab99fe6ab2c48ffb7b643aa2a3718f3b85c64946&" width="250"/>](image.png)
 
