@@ -1,6 +1,6 @@
 # CleverClock
 
-[<img src="https://cdn.discordapp.com/attachments/1227607174381961279/1247914140786233344/Logo.png?ex=6661c21c&is=6660709c&hm=872bbb25ec3eba294df7bfa0ab99fe6ab2c48ffb7b643aa2a3718f3b85c64946&" width="250"/>](image.png)
+[<img src="./assets/logo.png" width="250"/>](logo.png)
 
 ## Overview
 This project is a smart alarm clock that makes you scan an NFC tag or integrates with Anki to ensure you wake up by answering a series of questions. The project uses Angular for the frontend, Firebase for storage, and an Arduino for the hardware interface. The questions are evaluated using Google's Vertex AI.
@@ -95,14 +95,12 @@ This project is a smart alarm clock that makes you scan an NFC tag or integrates
 - Ensure you have set up Firebase with the correct configuration.
 - Customize the Arduino sketch as needed for your specific hardware setup.
 
-## Authors
-
-- [@lui-ah](https://github.com/lui-ah)
-
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+[<img src="./assets/settings.png" width="250"/>](settings.png)
+[<img src="./assets/ringing.png" width="250"/>](ringing.png)
 
 ## Demo
 
-![App Gif](https://via.placeholder.com/468x300?text=App+Gif+Here)
+[<img src="./assets/ringing.gif" width="250"/>](ringing.gif)
+[<img src="./assets/settings.gif" width="250"/>](settings.gif)
