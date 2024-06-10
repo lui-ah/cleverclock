@@ -6,7 +6,7 @@ import { routes } from './app.routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
-import { firebaseConfig } from "../environment/environment.prod";
+import { firebaseConfig } from '@env/environment.prod';
 import { isDevMode } from '@angular/core';
 import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
 import { provideServiceWorker } from '@angular/service-worker';

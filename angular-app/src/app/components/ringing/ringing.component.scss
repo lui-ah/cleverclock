@@ -1,4 +1,4 @@
-@use "../../variables" as v;
+@use "../../../variables" as v;
 
 #background-wrapper {
     position: fixed;
@@ -27,7 +27,7 @@
         height: 250vh;
         width: 250vw;
     
-        background: url("../../assets/GETUP2.svg");
+        background: url("@assets/GETUP2.svg");
         background-size: 37% auto; // Adjusts the Text size. To adjust the spacing, adjust the SVG.
         background-repeat: repeat;
         

@@ -6,15 +6,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button'
 import { MatDividerModule } from "@angular/material/divider";
 import { Observable, Subscription, map, take, timer } from 'rxjs';
-import { DatabaseService } from '../database.service';
+import { DatabaseService } from '@services/database.service';
 import { ActivatedRoute } from '@angular/router';
-import { Card, Feedback, SwitchOption } from '../types/types';
+import { Card, Feedback, SwitchOption } from '@custom-types/types';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import confetti from 'canvas-confetti'; // Import the confetti library, most web-dev thing I've ever done.
-import { SmartRatingService } from '../smart-rating.service';
+import { SmartRatingService } from '@services/smart-rating.service';
 import {MatSnackBar } from '@angular/material/snack-bar';
-import { NfcService } from '../nfc.service';
+import { NfcService } from '@services/nfc.service';
 @Component({
     selector: 'app-ringing',
     standalone: true,

@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { AsyncPipe, CommonModule, NgClass, NgFor } from '@angular/common';
-import { TrimPipe } from '../../pipes/trim.pipe';
+import { TrimPipe } from '@pipes/trim.pipe';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, } from '@angular/forms';
@@ -17,7 +17,7 @@ import {
   MatBottomSheetRef,
 } from '@angular/material/bottom-sheet';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { Card, CardNoId } from '../../types/types';
+import { Card, CardNoId } from '@custom-types/types';
 import {
   MatDialog,
   MAT_DIALOG_DATA,
@@ -27,7 +27,7 @@ import {
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { DatabaseService } from '../../database.service';
+import { DatabaseService } from '@services/database.service';
 import { Observable, firstValueFrom, map } from 'rxjs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
