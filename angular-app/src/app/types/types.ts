@@ -46,3 +46,9 @@ export interface Feedback {
     feedback: string;
     accept: boolean; // If the AI thinks the answer is correct.
 }
+
+export interface SensorData {
+    temperature: number[];
+    humidity: number[];
+    id: string;
+}
