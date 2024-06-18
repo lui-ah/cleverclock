@@ -2,8 +2,8 @@ import { AsyncPipe, CommonModule, KeyValuePipe, NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { SwitchOption, SwitchOptionKeys } from '../../types/types';
-import { DatabaseService } from '../../database.service';
+import { SwitchOption, SwitchOptionKeys } from '@custom-types/types';
+import { DatabaseService } from '@services/database.service';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, concat, firstValueFrom, map, mergeMap, take } from 'rxjs';
 

@@ -2,7 +2,7 @@
 
 import { Injectable, inject } from '@angular/core';
 import { VertexAI, getGenerativeModel } from '@angular/fire/vertexai-preview';
-import { Card, Feedback } from './types/types';
+import { Card, Feedback } from '@custom-types/types';
 @Injectable({
   providedIn: 'root'
 })

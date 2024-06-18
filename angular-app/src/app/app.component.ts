@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { DatabaseService } from './database.service';
+import { DatabaseService } from '@services/database.service';
 import { Observable, Subscription, filter, map, switchMap, tap } from 'rxjs';
 import { useDev } from './app.config';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { AsyncPipe } from '@angular/common';
-import { NfcService, NfcStatusEvent, NfcReadingActiveEvent } from './nfc.service';
+import { NfcService, NfcStatusEvent, NfcReadingActiveEvent } from '@services/nfc.service';
 import {MatSnackBar, MatSnackBarModule, MatSnackBarRef} from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 

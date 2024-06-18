@@ -6,8 +6,8 @@ import { MatButtonModule } from "@angular/material/button";
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, concat, map, take } from 'rxjs';
-import { DatabaseService } from '../../database.service';
-import { ClockState } from '../../types/types';
+import { DatabaseService } from '@services/database.service';
+import { ClockState } from '@custom-types/types';
 
 @Component({
   selector: 'app-date-picker',

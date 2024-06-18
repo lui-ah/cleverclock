@@ -8,7 +8,7 @@ export const routes: Routes = [
     {
         path: 'settings',
         loadComponent: () =>
-            import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
+            import('@components/dashboard/dashboard.component').then((m) => m.DashboardComponent),
         canActivate: [isNotRingingResolver],
         resolve: {
             wakeOptions: wakeOptionsResolver,
@@ -18,13 +18,13 @@ export const routes: Routes = [
     {
         path: '',
         loadComponent: () =>
-            import('./debug/debug.component').then((m) => m.DebugComponent),
+            import('@components/debug/debug.component').then((m) => m.DebugComponent),
         canActivate: [redirectRingingResolver],
     },
     {
         path: 'ringing',
         loadComponent: () =>
-            import('./ringing/ringing.component').then((m) => m.RingingComponent),
+            import('@components/ringing/ringing.component').then((m) => m.RingingComponent),
         canActivate: [isRingingResolver],
         canDeactivate: [isNotRingingResolver],
         resolve: {

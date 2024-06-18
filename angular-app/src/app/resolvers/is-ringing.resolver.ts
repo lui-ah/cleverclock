@@ -1,5 +1,5 @@
 import { ResolveFn, Router, UrlTree } from '@angular/router';
-import { DatabaseService } from '../database.service';
+import { DatabaseService } from '@services/database.service';
 import { inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
