@@ -42,7 +42,7 @@ export class DashboardComponent {
     // We are interested in the values from 20:00 to 08:00
 
     const start = 48 - 8;
-    const end = 48 + 16;
+    const end = 48 + 24;
 
     data = data.slice(start, end);
     labels = labels.slice(start, end);

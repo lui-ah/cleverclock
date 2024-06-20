@@ -1,14 +1,14 @@
 <div id="wrapper">
     <app-date-picker class="comp" />
 
-    @if (_titleTemperature && _dataTemperature && _chartTemperature)
+    @if (_titleTemperature && _dataTemperature && _dataHumid && _chartTemperature)
     {
         <app-chart class="comp" [title]="_titleTemperature" [data]="_dataTemperature" [chart]="_chartTemperature"
         ></app-chart>
     }
     @if (_titleHumid && _dataHumid && _chartHumid)
     {
-        <app-chart class="comp" [title]="_titleHumid" [data]="_dataTemperature" [chart]="_chartHumid"
+        <app-chart class="comp" [title]="_titleHumid" [data]="_dataHumid" [chart]="_chartHumid"
         ></app-chart>
     }
         

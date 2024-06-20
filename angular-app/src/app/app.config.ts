@@ -12,7 +12,7 @@ import { getVertexAI, provideVertexAI } from '@angular/fire/vertexai-preview';
 import { provideServiceWorker } from '@angular/service-worker';
 
 export const functionsForceProduction = false;
-export const forceDebug = true;
+export const forceDebug = false;
 export const useDev = (isDevMode() || forceDebug);
 
 const removeGuards = (routes: Routes) => routes.map((route) => (

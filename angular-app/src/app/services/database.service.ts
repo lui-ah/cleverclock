@@ -46,6 +46,8 @@ export class DatabaseService {
       idField: 'id',
     }) as Observable<Card[]>;  
     
+    // --- begin sensor data ---
+
     const q = query(
       collection(
         this.firestore, dbColPaths.temperature),
@@ -91,6 +93,8 @@ export class DatabaseService {
 
     this.temperture = this.sensorData.pipe(map(data => data.temperature));
     this.humidity = this.sensorData.pipe(map(data => data.humidity));
+
+    // --- end sensor data ---
   }
 
   uploadCard(card: Card | CardNoId) {

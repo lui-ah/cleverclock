@@ -30,7 +30,8 @@ export class SmartRatingService {
 
       Dein Output sollte Folgendes beinhalten:
       - Eine "score" (0-100): 0 bedeutet, dass die Antwort völlig falsch ist, 100 bedeutet, dass die Antwort perfekt oder eine exakte Übereinstimmung ist.
-      - Ein "feedback": ein Satz mit maximal 15 Wörtern. Dies sollte eine kurze Erklärung sein, warum die Antwort richtig oder falsch ist.
+      - Ein "feedback": Zwei Satz mit maximal 30 Wörtern. Dies sollte eine kurze Erklärung sein, warum die Antwort richtig 
+      oder falsch ist und ggf. eine erklärung was besser gehen würde.
       - "accept": ein boolescher Wert, der angibt, ob die Antwort als richtig akzeptiert werden sollte, sei nachsichtig.
 
       Ausgabe als (parsable mittels JSON.parse()) JSON im format: "{ "score": number, "feedback": string, "accept": boolean }" und nichts anderes.
