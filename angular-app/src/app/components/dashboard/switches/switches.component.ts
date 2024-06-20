@@ -5,7 +5,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { SwitchOption, SwitchOptionKeys } from '@custom-types/types';
 import { DatabaseService } from '@services/database.service';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, concat, firstValueFrom, map, mergeMap, take } from 'rxjs';
+import { Observable, concat, map, skip, take } from 'rxjs';
 
 @Component({
   selector: 'app-switches',
@@ -27,7 +27,7 @@ export class SwitchesComponent {
   constructor(private db : DatabaseService, private route: ActivatedRoute) { 
     this.options = concat( // get the data from the resolver then let the db take over.
       this.route.data.pipe(map(data => data['wakeOptions']), take(1)),
-      this.db.wakeOptions,
+      this.db.wakeOptions.pipe(skip(1)),
     );
   }
 

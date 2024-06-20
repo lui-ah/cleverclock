@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from "@angular/material/button";
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, concat, map, take } from 'rxjs';
+import { Observable, concat, map, skip, take } from 'rxjs';
 import { DatabaseService } from '@services/database.service';
 import { ClockState } from '@custom-types/types';
 
@@ -38,7 +38,7 @@ export class DatePickerComponent {
   constructor(private db : DatabaseService, private route: ActivatedRoute) { 
     this.currentTime = concat( // get the data from the resolver then let the db take over.
       this.route.data.pipe(map(data => (data['state'] as ClockState).nextTimer), take(1)),
-      this.db.nextTimer,
+      this.db.nextTimer.pipe(skip(1)),
     ).pipe(map(ts => ts.toDate().getTime()));
   }
 

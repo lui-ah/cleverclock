@@ -3,6 +3,7 @@ import { isNotRingingResolver, isRingingResolver, redirectRingingResolver } from
 import { wakeOptionsResolver } from './resolvers/wakeOptions.resolver';
 import { stateResolver } from './resolvers/state.resolver';
 import { cardsResolver } from './resolvers/cards.resolver';
+import { sensorExtendedResolver } from './resolvers/sensor.resolver';
 
 export const routes: Routes = [
     {
@@ -13,6 +14,7 @@ export const routes: Routes = [
         resolve: {
             wakeOptions: wakeOptionsResolver,
             state: stateResolver,
+            sensorDataExtended: sensorExtendedResolver,
         },
     },
     {
