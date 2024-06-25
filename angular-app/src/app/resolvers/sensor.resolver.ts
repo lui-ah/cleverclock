@@ -8,9 +8,3 @@ export const sensorResolver: ResolveFn<SensorData> = () => {
 
   return databaseService.sensorData;
 };
-
-export const sensorExtendedResolver: ResolveFn<SensorData> = () => {
-  const databaseService = inject(DatabaseService);
-
-  return databaseService.sensorDataExtended;
-};
