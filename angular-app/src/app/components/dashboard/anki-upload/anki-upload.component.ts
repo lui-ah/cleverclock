@@ -87,7 +87,13 @@ export class AnkiUploadComponent {
     
     if (wantsToUpload) {
       cards.forEach(async item => await this.db.uploadCard(item));
+      this._snackBar.open("Deck wurde hochgeladen", "Ok", {
+        duration: 1000,
+      });
     }
+    this._snackBar.open("Abgebrochen", "Ok", {
+      duration: 1000,
+    });
   }
 
   openSnackBar(message: string, action: string) {

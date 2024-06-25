@@ -5,7 +5,7 @@ import { AnkiUploadComponent } from '@components/dashboard/anki-upload/anki-uplo
 import { NfcComponent } from '@components/dashboard/nfc/nfc.component';
 import { ChartComponent, generateHalfHourTimes } from '@components/dashboard/chart/chart.component';
 import { ActivatedRoute } from '@angular/router';
-import { DatabaseService } from '@src/app/services/database.service';
+import { DatabaseService, SENSORTIMEFRAME } from '@src/app/services/database.service';
 import { SensorData } from '@src/app/types/types';
 import { ChartData, ChartConfiguration } from 'chart.js';
 import { Observable, concat, map, take, skip, firstValueFrom, skipWhile } from 'rxjs';
@@ -30,22 +30,22 @@ export class DashboardComponent {
 
   constructor(private route: ActivatedRoute, private db : DatabaseService) { 
     this.sensorData = concat(
-      this.route.data.pipe(map(data => data['sensorDataExtended'] as SensorData), take(1)),
-      this.db.sensorDataExtended.pipe(skip(1)),
+      this.route.data.pipe(map(data => data['sensorData'] as SensorData), take(1)),
+      this.db.sensorData.pipe(skip(1)),
     );
   }
 
   generateData = (data: number[]): ChartData => {
-    let labels = generateHalfHourTimes(0, data.length / 2);
+    const LABELSTIMEFRAMEINHOURS = 48; 
+    let labels = generateHalfHourTimes(0, LABELSTIMEFRAMEINHOURS); // 48 hours not 24! Length will be 48 * 2 = 96.
 
-    // These arrays are both length 48 * 2 = 96
-    // We are interested in the values from 20:00 to 08:00
+    // if (data.length < (SENSORTIMEFRAME.end - SENSORTIMEFRAME.start)) {
+    //   throw new Error('Data is too short');
+    // } else if (data.length > (SENSORTIMEFRAME.end - SENSORTIMEFRAME.start)) {
+    //   throw new Error('Data is too long');
+    // }
 
-    const start = 48 - 8;
-    const end = 48 + 24;
-
-    data = data.slice(start, end);
-    labels = labels.slice(start, end);
+    labels = labels.slice(SENSORTIMEFRAME.start, SENSORTIMEFRAME.end);
 
     return {
       labels,
@@ -66,6 +66,10 @@ export class DashboardComponent {
 
   async ngOnInit() {
     const points = await firstValueFrom(this.sensorData);
+
+    if(points?.temperature?.length < 1) {
+      throw new Error('No sensor data found.');
+    }
     
     this._chartTemperature = {
       type: 'line',

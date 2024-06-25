@@ -1,8 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, docData, doc, addDoc, Timestamp, updateDoc, collectionChanges, collectionData, DocumentData, deleteDoc, orderBy, getDocs, Query, CollectionReference, where, QueryConstraint, query, limit } from '@angular/fire/firestore';
+import { Firestore, collection, docData, doc, addDoc, Timestamp, updateDoc, collectionChanges, collectionData, DocumentData, deleteDoc, orderBy, getDocs, Query, CollectionReference, where, QueryConstraint, query, limit, setDoc } from '@angular/fire/firestore';
 import { Observable, map, tap } from 'rxjs';
 import { Card, CardNoId, ClockState, FunctionsEndpoints, SwitchOption, SwitchOptionKeys, dbColPaths, dbDocPaths, SensorData } from '@custom-types/types';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+
+export const SENSORTIMEFRAME = {
+  start: (24 - 4) * 2,
+  end: (24 + 8) * 2,
+};
 
 @Injectable({
   providedIn: 'root',
@@ -18,13 +23,9 @@ export class DatabaseService {
   cards: Observable<Card[]>;
   
   sensorData: Observable<SensorData>; // The current days sensor data every 30 minutes.
-  sensorDataExtended: Observable<SensorData>; // The current days sensor data plus the previous day.
-  // the extendet data is a helper to make it easier to display the previous night for example.
 
   temperture: Observable<number[]>; // in celsius
-  tempertureExtended: Observable<number[]>; // in celsius
   humidity: Observable<number[]>; // in percent
-  humidityExtended: Observable<number[]>; // in percent
 
   wakeOptions: Observable<SwitchOption<boolean>>;
 
@@ -52,43 +53,31 @@ export class DatabaseService {
       collection(
         this.firestore, dbColPaths.temperature),
         orderBy('date', 'desc'), // This means we get a new window after 24:00... which is fine.
-        limit(2), // We only need the last two days.
+        limit(1), // We only need the last day.
       );
     
-    this.sensorDataExtended = collectionData(q, {
+    this.sensorData = collectionData(q, {
       idField: 'id',
     }).pipe(map((data) => {
       const _data = data as SensorData[];
-      if (_data.length === 0) {
-        throw new Error('No sensor data found.');
-      } else if (_data.length === 1) {
-        console.error('Only one day of data found. This is not enough to display the previous day.');
-        _data[0].humidity.length = 48;
-        _data[0].temperature.length = 48;
-        return _data[0];
-      }
+
+      const wrongSizeTempt = _data[0].temperature.length !== SENSORTIMEFRAME.end - SENSORTIMEFRAME.start;
+      const wrongSizeHumid = _data[0].humidity.length !== SENSORTIMEFRAME.end - SENSORTIMEFRAME.start;
       
+      if (wrongSizeTempt) {
+        console.error('Temperature data is wrong size: ' + _data[0].temperature.length + ' !== ' + (SENSORTIMEFRAME.end - SENSORTIMEFRAME.start));
+      }
+      if (wrongSizeHumid) {
+        console.error('Humidity data is wrong size' + _data[0].humidity.length + ' !== ' + (SENSORTIMEFRAME.end - SENSORTIMEFRAME.start));
+      }
+      if (wrongSizeTempt || wrongSizeHumid) {
+        return {
+          temperature: new Array(SENSORTIMEFRAME.end - SENSORTIMEFRAME.start).fill(null),
+          humidity: new Array(SENSORTIMEFRAME.end - SENSORTIMEFRAME.start).fill(null),
+        } as SensorData;
+      }
 
-      const [today, yesterday] = _data
-
-      today.humidity.length = 48;
-      today.temperature.length = 48;
-      yesterday.humidity.length = 48;
-      yesterday.temperature.length = 48;
-
-      return {
-        id: _data[0].id, // We take the first ones id.
-        humidity: yesterday.humidity.concat(today.humidity),
-        temperature: yesterday.temperature.concat(today.temperature),
-      } as SensorData;
-    }));
-
-    this.tempertureExtended = this.sensorDataExtended.pipe(map(data => data.temperature));
-    this.humidityExtended = this.sensorDataExtended.pipe(map(data => data.humidity));
-
-    this.sensorData = this.sensorDataExtended.pipe(tap(data => {
-      data.humidity.splice(48);
-      data.temperature.splice(48);
+      return _data[0];
     }));
 
     this.temperture = this.sensorData.pipe(map(data => data.temperature));
